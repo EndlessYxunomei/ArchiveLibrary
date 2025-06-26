@@ -1,4 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ArchiveDB;
+using ArchiveLibrary.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using ServiceLayer;
+using ServiceLayer.Interfaces;
+using VMLayer.Navigation;
 
 namespace ArchiveLibrary
 {
@@ -13,10 +20,26 @@ namespace ArchiveLibrary
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIconsRegular");
                 });
 
+            builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            //ГДЕ НАХОДИТСЯ НАША БАЗА
+            //C:\Users\pestr\AppData\Local\Packages\com.companyname.archiveghost.client_9zz4h110yvjzm\LocalState
+
+            builder.Services.AddDbContext<ArchiveDbContext>(op =>
+            //op.UseSqlServer(builder.Configuration.GetConnectionString("ArchiveLibrarySQLServer")));
+            op.UseSqlite(builder.Configuration.GetConnectionString("ArchiveLibrary")));
+
+            //сервисы
+            builder.Services.AddSingleton<IDialogService, DialogServiceMAUI>();
+            builder.Services.AddSingleton<INavigationService, NavigationServiceMAUI>();
+            builder.Services.AddTransient<IOriginalService, OriginalService>();
+
+            //навигация
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
