@@ -10,7 +10,8 @@ namespace ArchiveDB
         public ArchiveDbContext() { }
         public ArchiveDbContext(DbContextOptions options) : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
+            Database.EnsureCreated();
         }
 
         //Конфигурация по умолчанию

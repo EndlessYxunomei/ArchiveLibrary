@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServiceLayer;
 using ServiceLayer.Interfaces;
+using VMLayer;
 using VMLayer.Navigation;
 
 namespace ArchiveLibrary
@@ -37,6 +38,11 @@ namespace ArchiveLibrary
             builder.Services.AddTransient<IOriginalService, OriginalService>();
 
             //навигация
+            Routing.RegisterRoute(NavigationConstants.OriginalList, typeof(OriginalListPage));
+            builder.Services.AddTransient<OriginalListPage>();
+            builder.Services.AddTransient<OriginalListViewModel>();
+            //builder.Services.AddTransientWithShellRoute<OriginalListPage, OriginalListViewModel>(NavigationConstants.OriginalList);
+
 
 #if DEBUG
             builder.Logging.AddDebug();

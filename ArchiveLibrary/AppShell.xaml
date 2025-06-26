@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="ArchiveLibrary.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,9 +7,12 @@
     Shell.FlyoutBehavior="Disabled"
     Title="ArchiveLibrary">
 
-    <ShellContent
+    <!--<ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+        Route="MainPage" />-->
+    <ShellContent
+        Title="Инвентарная книга"
+        ContentTemplate="{DataTemplate local:OriginalListPage}"
+        Route="OriginalList" />
 </Shell>
