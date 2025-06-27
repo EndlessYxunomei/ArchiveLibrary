@@ -1,4 +1,6 @@
-﻿namespace ArchiveLibrary
+﻿using VMLayer.Navigation;
+
+namespace ArchiveLibrary
 {
     public partial class App : Application
     {

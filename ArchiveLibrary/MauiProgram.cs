@@ -42,8 +42,10 @@ namespace ArchiveLibrary
             builder.Services.AddTransient<OriginalListPage>();
             builder.Services.AddTransient<OriginalListViewModel>();
             //builder.Services.AddTransientWithShellRoute<OriginalListPage, OriginalListViewModel>(NavigationConstants.OriginalList);
-
-
+            Routing.RegisterRoute(NavigationConstants.OriginalDetail, typeof(OriginalDetailPage));
+            builder.Services.AddTransient<OriginalDetailPage>();
+            builder.Services.AddTransient<OriginalDetailViewModel>();
+            
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

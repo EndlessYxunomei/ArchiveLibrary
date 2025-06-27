@@ -5,6 +5,7 @@ namespace ArchiveModels.DTO;
 
 public class OriginalDetailDto : IIdentityModel
 {
+
     public int Id { get; set; }
     [Range(1, int.MaxValue)]
     public required int InventoryNumber { get; set; }

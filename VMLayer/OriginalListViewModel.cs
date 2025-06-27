@@ -46,13 +46,20 @@ namespace VMLayer
                 if (result)
                 {
                     //Удаление оригинала
-                    await originalService.DeleteOriginal(SelectedOriginal.Id);
+                    var delResult = await originalService.DeleteOriginal(SelectedOriginal.Id);
+                    if (delResult.IsSuccess)
+                    {
+                        //обновление списка
+                        OriginalsList.Remove(SelectedOriginal);
+                        SelectedOriginal = null;
 
-                    //обновление списка
-                    OriginalsList.Remove(SelectedOriginal);
-                    SelectedOriginal = null;
+                        await dialogService.Notify("Удалено", "Документ удалён");
+                    }
+                    else
+                    {
+                        await dialogService.Notify("Ошибка удаления", delResult.ErrorCode);
+                    }
 
-                    await dialogService.Notify("Удалено", "Документ удалён");
                 }
             }
         }
@@ -64,8 +71,6 @@ namespace VMLayer
             }
         }
         private bool CanEditDeleteOriginal() => SelectedOriginal != null;
-
-
 
         //конструктор
         public OriginalListViewModel(INavigationService navigation, IDialogService dialog, IOriginalService original)
@@ -79,10 +84,10 @@ namespace VMLayer
             EditCommand = new AsyncRelayCommand(EditOriginal, CanEditDeleteOriginal);
 
             //Загружаем перовначальный список (УБРАТБ КОГДА СДЕЛАЕМ НОРМАЛЬНО)
-            LoadOriginalListAsync();
+            LoadOriginalList();
         }
 
-        private async void LoadOriginalListAsync()
+        private async Task LoadOriginalList()
         {
             var originallist = await originalService.GetOriginalListAsync();
             if (originallist.IsSuccess)
