@@ -32,7 +32,6 @@ public class CompanyService : ICompanyService
             }
             return Result<List<CompanyDto>>.Success(list);
         }
-
         return Result<List<CompanyDto>>.Fail(company_list.ErrorCode, company_list.ErrorData, company_list.Exception);
     }
 }

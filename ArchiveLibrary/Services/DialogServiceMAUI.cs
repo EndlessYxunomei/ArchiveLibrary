@@ -13,7 +13,8 @@ namespace ArchiveLibrary.Services
         public async Task<string?> Ask(string title, string message, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
         {
             return await Shell.Current.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText);
-            //return await Application.Current?.MainPage?.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText)! ?? throw new NullReferenceException();
+            //для этого убрать асинк
+            //return await Application.Current?.MainPage?.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText) ?? throw new NullReferenceException();
         }
         public async Task<bool> AskYesNo(string title, string message, string trueButtonText = "Да", string falseButtonText = "Нет")
         {

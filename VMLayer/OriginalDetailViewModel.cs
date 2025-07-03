@@ -165,7 +165,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
         }
         else
         {
-            await dialogService.Notify("Ошибка", "Данный инвентарный номер уже занят");
+            await dialogService.Notify("Ошибка", "Инвентарный номер занят" );
         }
     }
     private async Task CancelOriginal()

@@ -19,7 +19,7 @@ public class CompanyRepo(ArchiveDbContext context) : ICompanyRepo
         }
         catch (Exception ex)
         {
-            return Result<List<Company>>.Fail("Ошибка получения списка компаний", null, ex);
+            return Result<List<Company>>.Fail(ex);
         }
     }
 }

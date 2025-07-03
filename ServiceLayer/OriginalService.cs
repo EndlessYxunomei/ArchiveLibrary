@@ -23,7 +23,8 @@ public class OriginalService : IOriginalService
     public async Task<Result<OriginalDetailDto>> GetOriginalDetailAsync(int id)
     {
         var res = await originalRepo.GetOriginalAsync(id);
-        return res.IsSuccess ? Result<OriginalDetailDto>.Success((OriginalDetailDto)res.Data) : Result<OriginalDetailDto>.Fail(res.ErrorCode);
+        return res.IsSuccess ? Result<OriginalDetailDto>.Success((OriginalDetailDto)res.Data)
+            : Result<OriginalDetailDto>.Fail(res.ErrorCode, res.ErrorData, res.Exception);
     }
     public async Task<Result<List<OriginalListDto>>> GetOriginalListAsync()
     {
@@ -37,27 +38,10 @@ public class OriginalService : IOriginalService
             }
             return Result<List<OriginalListDto>>.Success(list);
         }
-        return Result<List<OriginalListDto>>.Fail("Не удалось загрузить список оригиналов");
+        return Result<List<OriginalListDto>>.Fail(originalList.ErrorCode, originalList.ErrorData, originalList.Exception);
     }
     public async Task<Result<OriginalListDto>> UpsertOriginal(OriginalDetailDto originalDetailDto)
     {
-        //Original newOriginal = new() 
-        //{
-        //    Id = originalDetailDto.Id,
-        //    InventoryNumber = originalDetailDto.InventoryNumber,
-        //    Name = originalDetailDto.Name,
-        //    Caption = originalDetailDto.Caption,
-        //    PageFormat = originalDetailDto.PageFormat,
-        //    PageCount = originalDetailDto.PageCount,
-        //    Notes = originalDetailDto.Notes,
-        //    CompanyId = originalDetailDto.Company?.Id,
-        //    DocumentId = originalDetailDto.Document?.Id,
-        //    PersonId = originalDetailDto.Person?.Id,
-
-        //    //CreatedDate = DateTime.Now
-        //    //ПРИДУМАТЬ ЧТО ДЕЛАТЬ СО СПИСКАМИ КОПИЙ, КОРРЕКЦИ И ПРИМЕНИМОСТИ
-        //};
-
         var newOriginalId = await originalRepo.UpsertOriginal((Original)originalDetailDto);
         if (newOriginalId.IsSuccess)
         {
@@ -72,18 +56,18 @@ public class OriginalService : IOriginalService
                 return Result<OriginalListDto>.Fail(newOriginal.ErrorCode, newOriginal.ErrorData, newOriginal.Exception);
             }
         }
-        else
-        {
-            return Result<OriginalListDto>.Fail(newOriginalId.ErrorCode, newOriginalId.ErrorData, newOriginalId.Exception);
-        }
+        
+        return Result<OriginalListDto>.Fail(newOriginalId.ErrorCode, newOriginalId.ErrorData, newOriginalId.Exception);
     }
     public async Task<Result<Nothing>> DeleteOriginal(int id) => await originalRepo.DeleteOriginal(id);
     public async Task<Result<int>> GetLastInventoryNumber() => await originalRepo.GetLastInventoryNumberAsync();
     public async Task<Result<Nothing>> CheckInventoryNumber(int inventorynumber) => await originalRepo.CheckInventoryNumberAsync(inventorynumber);
+
     public async Task<Result<OriginalListDto>> GetOriginalAsync(int id)
     {
         var res = await originalRepo.GetOriginalAsync(id);
-        return res.IsSuccess ? Result<OriginalListDto>.Success((OriginalListDto)res.Data) : Result<OriginalListDto>.Fail(res.ErrorCode);
+        return res.IsSuccess ? Result<OriginalListDto>.Success((OriginalListDto)res.Data)
+            : Result<OriginalListDto>.Fail(res.ErrorCode, res.ErrorData, res.Exception);
     }
 
     public async Task<Result<List<OriginalListDto>>> GetOriginalsByCompany(int companyId)
@@ -95,7 +79,7 @@ public class OriginalService : IOriginalService
             list.AddRange(originalList.Data.Select(original => (OriginalListDto)original));
             return Result<List<OriginalListDto>>.Success(list);
         }
-        return Result<List<OriginalListDto>>.Fail("Не удалось загрузить список компаний");
+        return Result<List<OriginalListDto>>.Fail(originalList.ErrorCode, originalList.ErrorData, originalList.Exception);
     }
 
     public async Task<Result<Nothing>> UpdateOriginalsApplicabilities(int id, List<ApplicabilityDto> applicabilityDtos)
@@ -118,6 +102,6 @@ public class OriginalService : IOriginalService
             list.AddRange(originalList.Data.Select(original => (OriginalListDto)original));
             return Result<List<OriginalListDto>>.Success(list);
         }
-        return Result<List<OriginalListDto>>.Fail("Не удалось загрузить список оригиналов");
+        return Result<List<OriginalListDto>>.Fail(originalList.ErrorCode, originalList.ErrorData, originalList.Exception);
     }
 }

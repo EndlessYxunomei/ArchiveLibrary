@@ -19,7 +19,7 @@ public class PersonRepo(ArchiveDbContext context) : IPersonRepo
         }
         catch (Exception ex)
         {
-            return Result<List<Person>>.Fail("Ошибка получения списка пользователей",null,ex);
+            return Result<List<Person>>.Fail(ex);
         }
     }
 }

@@ -20,7 +20,7 @@ public class DocumentRepo(ArchiveDbContext context) : IDocumentRepo
         }
         catch (Exception ex)
         {
-            return Result<List<Document>>.Fail("Ошибка получения списка документов", null, ex);
+            return Result<List<Document>>.Fail(ex);
         }
     }
 }
