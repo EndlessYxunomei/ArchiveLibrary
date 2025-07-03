@@ -9,24 +9,27 @@ namespace ArchiveLibrary.Services
 {
     public class DialogServiceMAUI : IDialogService
     {
-        public Task<string?> Ask(string title, string message, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
+        //базовые сообщения
+        public async Task<string?> Ask(string title, string message, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
         {
-            throw new NotImplementedException();
+            return await Shell.Current.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText);
+            //return await Application.Current?.MainPage?.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText)! ?? throw new NullReferenceException();
+        }
+        public async Task<bool> AskYesNo(string title, string message, string trueButtonText = "Да", string falseButtonText = "Нет")
+        {
+            return await Shell.Current.DisplayAlert(title, message,trueButtonText, falseButtonText);
+        }
+        public async Task Notify(string title, string message, string buttonText = "ОК")
+        {
+            await Shell.Current.DisplayAlert(title, message, buttonText);
         }
 
-        public Task<bool> AskYesNo(string title, string message, string trueButtonText = "Да", string falseButtonText = "Нет")
-        {
-            throw new NotImplementedException();
-        }
-
+        //специальные всплывашки
+        //ранее использовался IPopupService от MAUITollkit
         public Task ClosePopup(object? popupView, object? parameters = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task Notify(string title, string message, string buttonText = "ОК")
-        {
-            throw new NotImplementedException();
+            //заглушка
+            return Task.CompletedTask;
         }
     }
 }
