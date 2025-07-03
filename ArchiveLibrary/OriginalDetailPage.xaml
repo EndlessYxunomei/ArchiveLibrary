@@ -6,6 +6,9 @@
              x:Class="ArchiveLibrary.OriginalDetailPage"
              x:DataType="vms:OriginalDetailViewModel"
              Title="Подробности">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding CancelCommand}"/>
+    </Shell.BackButtonBehavior>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>

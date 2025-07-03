@@ -39,7 +39,7 @@ public class OriginalService : IOriginalService
         }
         return Result<List<OriginalListDto>>.Fail("Не удалось загрузить список оригиналов");
     }
-    public async Task<Result<int>> UpsertOriginal(OriginalDetailDto originalDetailDto)
+    public async Task<Result<OriginalListDto>> UpsertOriginal(OriginalDetailDto originalDetailDto)
     {
         //Original newOriginal = new() 
         //{
@@ -58,7 +58,24 @@ public class OriginalService : IOriginalService
         //    //ПРИДУМАТЬ ЧТО ДЕЛАТЬ СО СПИСКАМИ КОПИЙ, КОРРЕКЦИ И ПРИМЕНИМОСТИ
         //};
 
-        return await originalRepo.UpsertOriginal((Original)originalDetailDto);
+        var newOriginalId = await originalRepo.UpsertOriginal((Original)originalDetailDto);
+        if (newOriginalId.IsSuccess)
+        {
+            var newOriginal = await originalRepo.GetOriginalAsync(newOriginalId.Data);
+            if (newOriginal.IsSuccess)
+            {
+                //await originalService.UpdateOriginalsApplicabilities(id, [.. ApplicabilityList]);
+                return Result<OriginalListDto>.Success((OriginalListDto)newOriginal.Data);
+            }
+            else
+            {
+                return Result<OriginalListDto>.Fail(newOriginal.ErrorCode, newOriginal.ErrorData, newOriginal.Exception);
+            }
+        }
+        else
+        {
+            return Result<OriginalListDto>.Fail(newOriginalId.ErrorCode, newOriginalId.ErrorData, newOriginalId.Exception);
+        }
     }
     public async Task<Result<Nothing>> DeleteOriginal(int id) => await originalRepo.DeleteOriginal(id);
     public async Task<Result<int>> GetLastInventoryNumber() => await originalRepo.GetLastInventoryNumberAsync();

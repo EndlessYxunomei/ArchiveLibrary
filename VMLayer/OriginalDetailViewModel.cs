@@ -18,6 +18,9 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     private readonly INavigationService navigationService;
     private readonly IDialogService dialogService;
     private readonly IOriginalService originalService;
+    private readonly IPersonService personService;
+    private readonly ICompanyService companyService;
+    private readonly IDocumentService documentService;
     public ValidationErrorExposer ErrorExposer { get; }
 
     //Приватные поля
@@ -127,9 +130,43 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     public IAsyncRelayCommand CancelCommand { get; }
     private async Task SaveOriginal()
     {
-        
-        ErrorsChanged -= OriginalViewModel_ErrorsChanged;
-        await navigationService.GoBack();
+        ValidateAllProperties();
+        var isValidOriginalNumber = await originalService.CheckInventoryNumber(InventoryNumber);
+
+        if(!HasErrors &&
+            ((id == 0 && isValidOriginalNumber.IsSuccess)
+            || ( id != 0 && ( oldInventoryNumber == InventoryNumber || isValidOriginalNumber.IsSuccess) )))
+        {
+            OriginalDetailDto detailDto = new()
+            {
+                Id = id,
+                InventoryNumber = InventoryNumber,
+                Name = Name,
+                Caption = Caption,
+                PageFormat = PageFormat,
+                PageCount = PageCount,
+                Company = Company,
+                Document = Document,
+                Person = Person,
+                Notes = Notes
+                //необходимо добавить применимость и обновить её в сервисе
+            };
+
+            var res = await originalService.UpsertOriginal(detailDto);
+            if (res.IsSuccess)
+            {
+                ErrorsChanged -= OriginalViewModel_ErrorsChanged;
+                await navigationService.GoBackAndReturn(new Dictionary<string, object>() { { NavParamConstants.OriginalList, res.Data } });
+            }
+            else
+            {
+                await dialogService.Notify("Ошибка", res.ErrorCode);
+            }
+        }
+        else
+        {
+            await dialogService.Notify("Ошибка", "Данный инвентарный номер уже занят");
+        }
     }
     private async Task CancelOriginal()
     {
@@ -138,11 +175,15 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     }
 
     //консруктор
-    public OriginalDetailViewModel(INavigationService navigationService, IDialogService dialogService, IOriginalService originalService)
+    public OriginalDetailViewModel(INavigationService navigationService, IDialogService dialogService,
+        IOriginalService originalService, IPersonService personService, ICompanyService companyService, IDocumentService documentService)
     {
         this.navigationService = navigationService;
         this.dialogService = dialogService;
         this.originalService = originalService;
+        this.personService = personService;
+        this.companyService = companyService;
+        this.documentService = documentService;
 
         AcseptCommand = new AsyncRelayCommand(SaveOriginal, () => !HasErrors);
         CancelCommand = new AsyncRelayCommand(CancelOriginal);
@@ -160,12 +201,22 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     public async Task OnNavigatedTo(Dictionary<string, object> parameters)
     {
         //НАполение списков документов, компаний и пользователей
-        //var newDocumentList = await documentService.GetDocumentList(DocumentType.AddOriginal);
-        //var newCompanyList = await companyService.GetCompanyList();
-        //var newPersonList = await personService.GetPersonList();
-        //newDocumentList.ForEach(DocumentList.Add);
-        //newCompanyList.ForEach(Companylist.Add);
-        //newPersonList.ForEach(PersonList.Add);
+        var newDocumentList = await documentService.GetDocumentListAsync(DocumentType.AddOriginal);
+        var newCompanyList = await companyService.GetCompanyListAsync();
+        var newPersonList = await personService.GetPersonListAsync();
+        if (newPersonList.IsSuccess)
+        {
+            newPersonList.Data.ForEach(PersonList.Add);
+        }
+        if (newCompanyList.IsSuccess)
+        {
+            newCompanyList.Data.ForEach(Companylist.Add);
+        }
+        if (newDocumentList.IsSuccess)
+        {
+            newDocumentList.Data.ForEach(DocumentList.Add);
+        }
+
 
         if (parameters.TryGetValue(NavParamConstants.OriginalDetail, out object? value_orig) && value_orig is int origId)
         {

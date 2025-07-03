@@ -10,7 +10,7 @@ public interface IOriginalService
     Task<Result<OriginalListDto>> GetOriginalAsync(int id);
     Task<Result<int>> GetLastInventoryNumber();
     Task<Result<Nothing>> CheckInventoryNumber(int inventorynumber);
-    Task<Result<int>> UpsertOriginal(OriginalDetailDto originalDetailDto);
+    Task<Result<OriginalListDto>> UpsertOriginal(OriginalDetailDto originalDetailDto);
     Task<Result<Nothing>> DeleteOriginal(int id);
     Task<Result<List<OriginalListDto>>> GetOriginalsByCompany(int companyId);
     Task<Result<List<OriginalListDto>>> GetOriginalsByApplicability(int applicabilityId);

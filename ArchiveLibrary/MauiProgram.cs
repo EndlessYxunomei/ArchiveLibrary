@@ -36,6 +36,9 @@ namespace ArchiveLibrary
             builder.Services.AddSingleton<IDialogService, DialogServiceMAUI>();
             builder.Services.AddSingleton<INavigationService, NavigationServiceMAUI>();
             builder.Services.AddTransient<IOriginalService, OriginalService>();
+            builder.Services.AddTransient<IPersonService, PersonService>();
+            builder.Services.AddTransient<IDocumentService, DocumentService>();
+            builder.Services.AddTransient<ICompanyService, CompanyService>();
 
             //навигация
             Routing.RegisterRoute(NavigationConstants.OriginalList, typeof(OriginalListPage));
