@@ -1,5 +1,6 @@
 ﻿using ArchiveDB;
 using ArchiveModels;
+using ArchiveModels.DTO;
 using ArchiveModels.Utilities;
 using DataLayer.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -206,7 +207,7 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
     //}
 
     //новые реализации интерфейса
-    public async Task<Result<Original>> GetOriginalAsync(int id)
+    public async Task<Result<OriginalDetailDto>> GetOriginalDetailAsync(int id)
     {
         try
         {
@@ -218,67 +219,106 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
                 .Include(x => x.Document)
                 .Include(x => x.Person)
                 .AsNoTracking()
+                //.Select(s => (OriginalDetailDto)s) //почему-то не проканало
                 .FirstOrDefaultAsync(x => x.Id == id);
-            return original != null ? Result<Original>.Success(original) : Result<Original>.Fail("Original not found", $"Original repo. Original id={id} is not found in database");
+
+            return original != null
+                ? Result<OriginalDetailDto>.Success((OriginalDetailDto)original)
+                : Result<OriginalDetailDto>.Fail("Original not found", $"Original repo. Original id={id} is not found in database");
         }
         catch (Exception ex)
         {
-            return Result<Original>.Fail(ex);
+            return Result<OriginalDetailDto>.Fail(ex);
         }
+
     }
-    public async Task<Result<List<Original>>> GetOriginalList()
+    public async Task<Result<OriginalListDto>> GetOriginalAsync(int id)
     {
         try
         {
-            List<Original> original_list = await _context.Originals.AsNoTracking().Include(x => x.Document).OrderBy(x => x.InventoryNumber).ToListAsync();
-            return Result<List<Original>>.Success(original_list);
+            var original = await _context.Originals
+                .Include(x => x.Document)
+                .AsNoTracking()
+                .Select(s => (OriginalListDto)s)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return original != null
+                ? Result<OriginalListDto>.Success(original)
+                : Result<OriginalListDto>.Fail("Original not found", $"Original repo. Original id={id} is not found in database");
         }
         catch (Exception ex)
         {
-            return Result<List<Original>>.Fail(ex);
+            return Result<OriginalListDto>.Fail(ex);
         }
     }
-
-    public async Task<Result<List<Original>>> GetOriginalsByDocument(int docunentId)
+    public async Task<Result<List<OriginalListDto>>> GetOriginalList()
     {
         try
         {
-            List<Original> original_list = await _context.Originals.AsNoTracking().Where(x => x.DocumentId == docunentId).ToListAsync();
-            return Result<List<Original>>.Success(original_list);
+            List<OriginalListDto> original_list = await _context.Originals
+                .AsNoTracking()
+                .Include(x => x.Document)
+                .OrderBy(x => x.InventoryNumber)
+                .Select (s => (OriginalListDto)s)
+                .ToListAsync();
+            return Result<List<OriginalListDto>>.Success(original_list);
         }
         catch (Exception ex)
         {
-            return Result<List<Original>>.Fail(ex);
+            return Result<List<OriginalListDto>>.Fail(ex);
         }
     }
 
-    public async Task<Result<List<Original>>> GetOriginalsByCompany(int companyId)
+    public async Task<Result<List<OriginalListDto>>> GetOriginalsByDocument(int docunentId)
     {
         try
         {
-            List<Original> original_list = await _context.Originals.AsNoTracking().Where(x => x.CompanyId == companyId).ToListAsync();
-            return Result<List<Original>>.Success(original_list);
+            List<OriginalListDto> original_list = await _context.Originals
+                .AsNoTracking()
+                .Where(x => x.DocumentId == docunentId)
+                .Select(s => (OriginalListDto)s)
+                .ToListAsync();
+            return Result<List<OriginalListDto>>.Success(original_list);
         }
         catch (Exception ex)
         {
-            return Result<List<Original>>.Fail(ex);
+            return Result<List<OriginalListDto>>.Fail(ex);
         }
     }
-
-    public async Task<Result<List<Original>>> GetOriginalsByApplicability(int applicabilityId)
+    public async Task<Result<List<OriginalListDto>>> GetOriginalsByCompany(int companyId)
     {
         try
         {
-            List<Original> original_list = await _context.Originals.AsNoTracking().Where(x => x.Applicabilities
-                .Contains(_context.Applicabilities.First(y => y.Id == applicabilityId))).ToListAsync();
-            return Result<List<Original>>.Success(original_list);
+            List<OriginalListDto> original_list = await _context.Originals
+                .AsNoTracking()
+                .Where(x => x.CompanyId == companyId)
+                .Select (s => (OriginalListDto)s)
+                .ToListAsync();
+            return Result<List<OriginalListDto>>.Success(original_list);
         }
         catch (Exception ex)
         {
-            return Result<List<Original>>.Fail(ex);
+            return Result<List<OriginalListDto>>.Fail(ex);
+        }
+    }
+    public async Task<Result<List<OriginalListDto>>> GetOriginalsByApplicability(int applicabilityId)
+    {
+        try
+        {
+            List<OriginalListDto> original_list = await _context.Originals
+                .AsNoTracking()
+                .Where(x => x.Applicabilities
+                    .Contains(_context.Applicabilities.First(y => y.Id == applicabilityId)))
+                .Select (s => (OriginalListDto)s)
+                .ToListAsync();
+            return Result<List<OriginalListDto>>.Success(original_list);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<OriginalListDto>>.Fail(ex);
         }
     }
 
+    //получение и проверка инвентарных номеров
     public async Task<Result<int>> GetLastInventoryNumberAsync()
     {
         try
@@ -291,7 +331,6 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
             return Result<int>.Fail(ex);
         }
     }
-
     public async Task<Result<Nothing>> CheckInventoryNumberAsync(int inventoryNumber)
     {
         try
@@ -305,58 +344,65 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
         }
     }
 
-    public async Task<Result<int>> UpsertOriginal(Original original)
+    //Create Update Delete
+    public async Task<Result<int>> UpsertOriginal(OriginalDetailDto original)
     {
         try
         {
-            return original.Id > 0 ? await UpdateOriginal(original) : await CreateOriginal(original);
+            return original.Id > 0
+                ? await UpdateOriginal(original)
+                : await CreateOriginal(original);
         }
         catch (Exception ex)
         {
             return Result<int>.Fail(ex);
         }
     }
-    private async Task<Result<int>> CreateOriginal(Original original)
+    private async Task<Result<int>> CreateOriginal(OriginalDetailDto original)
     {
         try
         {
+            Original new_original = (Original)original;
             //потом ещё раз попробовать чтобы дата изменений создавалась в контексте автоматически
-            original.CreatedDate = DateTime.Now;
-            await _context.Originals.AddAsync(original);
+            new_original.CreatedDate = DateTime.Now;
+            await _context.Originals.AddAsync(new_original);
             await _context.SaveChangesAsync();
 
-            return original.Id > 0 ? Result<int>.Success(original.Id) : Result<int>.Fail("Can't create Original", $"Original Repo. Cannot create original {original.InventoryNumber} {original.Name}");
+            return new_original.Id > 0
+                ? Result<int>.Success(new_original.Id)
+                : Result<int>.Fail("Can't create Original", $"Original Repo. Cannot create original {new_original.InventoryNumber} {new_original.Name}");
         }
         catch (Exception ex)
         {
             return Result<int>.Fail(ex);
         }
     }
-    private async Task<Result<int>> UpdateOriginal(Original original)
+    private async Task<Result<int>> UpdateOriginal(OriginalDetailDto original)
     {
         try
         {
+            Original updated_original = (Original)original;
             var dbOriginal = await _context.Originals
             //.Include(x => x.Applicabilities)
             //.Include(x => x.Corrections)
             //.Include(x => x.Copies)
-            .FirstOrDefaultAsync(x => x.Id == original.Id);
+            .FirstOrDefaultAsync(x => x.Id == updated_original.Id);
 
             if (dbOriginal == null)
             {
                 return Result<int>.Fail("Original not found", $"Original Repo. Original id={original.Id} is not found during update procedure");
             }
 
-            dbOriginal.Caption = original.Caption;
-            dbOriginal.Name = original.Name;
-            dbOriginal.InventoryNumber = original.InventoryNumber;
-            dbOriginal.IsDeleted = original.IsDeleted;
-            dbOriginal.Notes = original.Notes;
-            dbOriginal.PageCount = original.PageCount;
-            dbOriginal.PageFormat = original.PageFormat;
-            dbOriginal.DocumentId = original.DocumentId;
-            dbOriginal.CompanyId = original.CompanyId;
-            dbOriginal.PersonId = original.PersonId;
+            dbOriginal.Caption = updated_original.Caption;
+            dbOriginal.Name = updated_original.Name;
+            dbOriginal.InventoryNumber = updated_original.InventoryNumber;
+            //dbOriginal.IsDeleted = updating_original.IsDeleted;
+            dbOriginal.Notes = updated_original.Notes;
+            dbOriginal.PageCount = updated_original.PageCount;
+            dbOriginal.PageFormat = updated_original.PageFormat;
+            dbOriginal.DocumentId = updated_original.DocumentId;
+            dbOriginal.CompanyId = updated_original.CompanyId;
+            dbOriginal.PersonId = updated_original.PersonId;
 
             dbOriginal.LastModifiedDate = DateTime.Now;
 
@@ -375,14 +421,13 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
 
             await _context.SaveChangesAsync();
 
-            return Result<int>.Success(original.Id);
+            return Result<int>.Success(dbOriginal.Id);
         }
         catch (Exception ex)
         {
             return Result<int>.Fail(ex);
         }
     }
-
     public async Task<Result<Nothing>> DeleteOriginal(int id)
     {
         try
