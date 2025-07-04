@@ -22,17 +22,9 @@ public class CompanyService : ICompanyService
     public async Task<Result<List<CompanyDto>>> GetCompanyListAsync()
     {
         var company_list = await companyRepo.GetCompanyListAsync();
-        if (company_list.IsSuccess)
-        {
-            List<CompanyDto> list = [];
-            foreach (var company in company_list.Data)
-            {
-                CompanyDto dto = (CompanyDto)company;
-                list.Add(dto);
-            }
-            return Result<List<CompanyDto>>.Success(list);
-        }
-        return Result<List<CompanyDto>>.Fail(company_list.ErrorCode, company_list.ErrorData, company_list.Exception);
+        return company_list.IsSuccess
+            ? Result<List<CompanyDto>>.Success(company_list.Data)
+            : Result<List<CompanyDto>>.Fail(company_list.ErrorCode, company_list.ErrorData, company_list.Exception);
     }
 }
 

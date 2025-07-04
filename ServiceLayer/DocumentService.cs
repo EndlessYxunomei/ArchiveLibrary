@@ -23,17 +23,8 @@ public class DocumentService : IDocumentService
     public async Task<Result<List<DocumentListDto>>> GetDocumentListAsync(DocumentType type)
     {
         var document_list = await documentRepo.GetDocumentListAsync(type);
-        if (document_list.IsSuccess)
-        {
-            List<DocumentListDto> list = [];
-            foreach (var document in document_list.Data)
-            {
-                DocumentListDto dto = (DocumentListDto)document;
-                list.Add(dto);
-            }
-            return Result<List<DocumentListDto>>.Success(list);
-        }
-
-        return Result<List<DocumentListDto>>.Fail(document_list.ErrorCode, document_list.ErrorData, document_list.Exception);
+        return document_list.IsSuccess
+            ? Result<List<DocumentListDto>>.Success(document_list.Data)
+            : Result<List<DocumentListDto>>.Fail(document_list.ErrorCode, document_list.ErrorData, document_list.Exception);
     }
 }

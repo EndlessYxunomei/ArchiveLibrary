@@ -1,5 +1,5 @@
 ﻿using ArchiveDB;
-using ArchiveModels;
+using ArchiveModels.DTO;
 using ArchiveModels.Utilities;
 using DataLayer.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,16 +10,16 @@ public class CompanyRepo(ArchiveDbContext context) : ICompanyRepo
 {
     private readonly ArchiveDbContext _context = context;
 
-    public async Task<Result<List<Company>>> GetCompanyListAsync()
+    public async Task<Result<List<CompanyDto>>> GetCompanyListAsync()
     {
         try
         {
-            var res = await _context.Companies.AsNoTracking().ToListAsync();
-            return Result<List<Company>>.Success(res);
+            var res = await _context.Companies.AsNoTracking().Select(s => (CompanyDto)s).ToListAsync();
+            return Result<List<CompanyDto>>.Success(res);
         }
         catch (Exception ex)
         {
-            return Result<List<Company>>.Fail(ex);
+            return Result<List<CompanyDto>>.Fail(ex);
         }
     }
 }

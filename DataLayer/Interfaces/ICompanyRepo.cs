@@ -1,9 +1,9 @@
-﻿using ArchiveModels;
+﻿using ArchiveModels.DTO;
 using ArchiveModels.Utilities;
 
 namespace DataLayer.Interfaces;
 
 public interface ICompanyRepo
 {
-    public Task<Result<List<Company>>> GetCompanyListAsync();
+    public Task<Result<List<CompanyDto>>> GetCompanyListAsync();
 }

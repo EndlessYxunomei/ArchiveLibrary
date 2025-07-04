@@ -4,11 +4,7 @@ using ArchiveModels.Utilities;
 using DataLayer;
 using DataLayer.Interfaces;
 using ServiceLayer.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ServiceLayer;
 
@@ -27,17 +23,8 @@ public class PersonService : IPersonService
     public async Task<Result<List<PersonListDto>>> GetPersonListAsync()
     {
         var person_list = await personRepo.GetPersonListAsync();
-        if (person_list.IsSuccess)
-        {
-            List<PersonListDto> list = [];
-            foreach (var person in person_list.Data)
-            {
-                PersonListDto dto = (PersonListDto)person;
-                list.Add(dto);
-            }
-            return Result<List<PersonListDto>>.Success(list);
-        }
-
-        return Result<List<PersonListDto>>.Fail(person_list.ErrorCode, person_list.ErrorData, person_list.Exception);
+        return person_list.IsSuccess
+            ? Result<List<PersonListDto>>.Success(person_list.Data)
+            : Result<List<PersonListDto>>.Fail(person_list.ErrorCode, person_list.ErrorData, person_list.Exception);
     }
 }
