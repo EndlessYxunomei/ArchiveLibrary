@@ -239,10 +239,10 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
             var original = await _context.Originals
                 .Include(x => x.Document)
                 .AsNoTracking()
-                .Select(s => (OriginalListDto)s)
+                //.Select(s => (OriginalListDto)s)
                 .FirstOrDefaultAsync(x => x.Id == id);
             return original != null
-                ? Result<OriginalListDto>.Success(original)
+                ? Result<OriginalListDto>.Success((OriginalListDto)original)
                 : Result<OriginalListDto>.Fail("Original not found", $"Original repo. Original id={id} is not found in database");
         }
         catch (Exception ex)
