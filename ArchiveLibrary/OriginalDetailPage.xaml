@@ -17,7 +17,7 @@
             <HorizontalStackLayout Padding="5" Spacing="5">
                 <Label Text="Инвентарный номер:"/>
                 <Grid ColumnDefinitions="*, Auto">
-                    <Entry Placeholder="0" Text="{Binding InventoryNumber}" Keyboard="Numeric" WidthRequest="50"/>
+                    <Entry Placeholder="0" Text="{Binding InventoryNumber}" Keyboard="Numeric" WidthRequest="50" TextChanged="Entry_TextChanged"/>
                     <Label Text="&#xe000;" TextColor="Red" FontFamily="MaterialIconsRegular" FontSize="20" Grid.Column="1">
                         <Label.Triggers>
                             <DataTrigger
