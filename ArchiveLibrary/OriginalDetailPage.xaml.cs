@@ -20,7 +20,7 @@ public partial class OriginalDetailPage : ContentPage
             return;
 
         // If the text field only contains numbers then leave.
-        if (!Regex.Match(regex, "^[0-9]+$").Success)
+        if (!MyRegex().Match(regex).Success)
         {
             // This returns to the previous valid state.
             var entry = sender as Entry;
@@ -29,4 +29,7 @@ public partial class OriginalDetailPage : ContentPage
                     : e.OldTextValue;
         }
     }
+
+    [GeneratedRegex("^[0-9]+$")]
+    private static partial Regex MyRegex();
 }
