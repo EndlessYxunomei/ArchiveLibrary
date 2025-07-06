@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMLayer", "VMLayer\VMLayer.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveLibrary", "ArchiveLibrary\ArchiveLibrary.csproj", "{A4759DB4-7887-43B5-97B6-6C0F1A29E7C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveTests", "ArchiveTests\ArchiveTests.csproj", "{7F299453-AEC5-43C6-9CFD-B5A1F8DCBCEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{A4759DB4-7887-43B5-97B6-6C0F1A29E7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4759DB4-7887-43B5-97B6-6C0F1A29E7C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4759DB4-7887-43B5-97B6-6C0F1A29E7C2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{7F299453-AEC5-43C6-9CFD-B5A1F8DCBCEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F299453-AEC5-43C6-9CFD-B5A1F8DCBCEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F299453-AEC5-43C6-9CFD-B5A1F8DCBCEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F299453-AEC5-43C6-9CFD-B5A1F8DCBCEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
