@@ -2,6 +2,7 @@
 using ArchiveModels.Utilities;
 using DataLayer.Interfaces;
 using NSubstitute;
+using ServiceLayer;
 
 namespace ArchiveTests.ServiceTests;
 
@@ -22,9 +23,10 @@ public class DocumentServiceTests
             ];
         documentRepo.GetDocumentListAsync(Arg.Is<ArchiveModels.DocumentType>(x => x == ArchiveModels.DocumentType.AddOriginal))
             .Returns(Result<List<DocumentListDto>>.Success(test_list.FindAll(y => y.DocumentType == ArchiveModels.DocumentType.AddOriginal)));
+        var documentService = new DocumentService(documentRepo);
 
         //Act
-        var res = await documentRepo.GetDocumentListAsync(ArchiveModels.DocumentType.AddOriginal);
+        var res = await documentService.GetDocumentListAsync(ArchiveModels.DocumentType.AddOriginal);
 
         //Assert
         Assert.True(res.IsSuccess);

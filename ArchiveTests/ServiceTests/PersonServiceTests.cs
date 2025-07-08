@@ -2,6 +2,7 @@
 using ArchiveModels.Utilities;
 using DataLayer.Interfaces;
 using NSubstitute;
+using ServiceLayer;
 
 namespace ArchiveTests.ServiceTests;
 
@@ -18,9 +19,10 @@ public class PersonServiceTests
                 new() { Id = 2, FullName = "test2"}
             ];
         pesronRepo.GetPersonListAsync().Returns(Result<List<PersonListDto>>.Success(test_list));
+        var personService = new PersonService(pesronRepo);
 
         //Act
-        var res = await pesronRepo.GetPersonListAsync();
+        var res = await personService.GetPersonListAsync();
 
         //Assert
         Assert.True(res.IsSuccess);

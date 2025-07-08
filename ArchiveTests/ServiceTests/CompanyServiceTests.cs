@@ -2,6 +2,7 @@
 using ArchiveModels.Utilities;
 using DataLayer.Interfaces;
 using NSubstitute;
+using ServiceLayer;
 
 namespace ArchiveTests.ServiceTests;
 
@@ -18,9 +19,10 @@ public class CompanyServiceTests
                 new() { Id = 2, Name = "test2", Description = "test_description"}
             ];
         companyRepo.GetCompanyListAsync().Returns(Result<List<CompanyDto>>.Success(test_list));
+        var companyService = new CompanyService(companyRepo);
 
         //Act
-        var res = await companyRepo.GetCompanyListAsync();
+        var res = await companyService.GetCompanyListAsync();
 
         //Assert
         Assert.True(res.IsSuccess);
