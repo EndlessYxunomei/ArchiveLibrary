@@ -27,10 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ServiceTests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ArchiveDB\ArchiveDB.csproj" />
     <ProjectReference Include="..\ArchiveModels\ArchiveModels.csproj" />
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
