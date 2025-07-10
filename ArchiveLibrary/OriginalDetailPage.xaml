@@ -3,9 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vms="clr-namespace:VMLayer;assembly=VMLayer"
              xmlns:dto="clr-namespace:ArchiveModels.DTO;assembly=ArchiveModels"
+             xmlns:conv ="clr-namespace:ArchiveLibrary.Converters"
              x:Class="ArchiveLibrary.OriginalDetailPage"
              x:DataType="vms:OriginalDetailViewModel"
              Title="Подробности">
+    <ContentPage.Resources>
+        <conv:IntToStringConverter x:Key= "intToStringConverter" />
+    </ContentPage.Resources>
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding CancelCommand}"/>
     </Shell.BackButtonBehavior>
@@ -17,7 +21,7 @@
             <HorizontalStackLayout Padding="5" Spacing="5">
                 <Label Text="Инвентарный номер:"/>
                 <Grid ColumnDefinitions="*, Auto">
-                    <Entry Placeholder="0" Text="{Binding InventoryNumber}" Keyboard="Numeric" WidthRequest="50" TextChanged="Entry_TextChanged"/>
+                    <Entry Placeholder="0" Text="{Binding InventoryNumber, Converter={StaticResource intToStringConverter}}" Keyboard="Numeric" WidthRequest="50"/>
                     <Label Text="&#xe000;" TextColor="Red" FontFamily="MaterialIconsRegular" FontSize="20" Grid.Column="1">
                         <Label.Triggers>
                             <DataTrigger

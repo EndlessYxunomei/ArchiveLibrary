@@ -33,4 +33,8 @@
     <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="VMTests\" />
+  </ItemGroup>
+
 </Project>
