@@ -21,8 +21,10 @@ public class DocumentServiceTests
                 new() { Id = 4, Name = "test4", DocumentType = ArchiveModels.DocumentType.DeliverCopy },
                 new() { Id = 5, Name = "test5", DocumentType = ArchiveModels.DocumentType.AddCorrection }
             ];
-        documentRepo.GetDocumentListAsync(Arg.Is<ArchiveModels.DocumentType>(x => x == ArchiveModels.DocumentType.AddOriginal))
-            .Returns(Result<List<DocumentListDto>>.Success(test_list.FindAll(y => y.DocumentType == ArchiveModels.DocumentType.AddOriginal)));
+        documentRepo.GetDocumentListAsync(Arg.Any<ArchiveModels.DocumentType>())
+            .Returns(x => Result<List<DocumentListDto>>.Success(test_list.FindAll(y => y.DocumentType == (ArchiveModels.DocumentType)x[0])));
+        //documentRepo.GetDocumentListAsync(Arg.Is<ArchiveModels.DocumentType>(x => x == ArchiveModels.DocumentType.AddOriginal))
+        //    .Returns(Result<List<DocumentListDto>>.Success(test_list.FindAll(y => y.DocumentType == ArchiveModels.DocumentType.AddOriginal)));
         var documentService = new DocumentService(documentRepo);
 
         //Act
