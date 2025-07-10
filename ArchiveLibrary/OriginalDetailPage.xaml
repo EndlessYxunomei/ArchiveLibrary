@@ -9,7 +9,8 @@
              Title="Подробности">
     <ContentPage.Resources>
         <conv:IntToStringConverter x:Key= "intToStringConverter" />
-    </ContentPage.Resources>
+    </ContentPage.Resources>
+
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding CancelCommand}"/>
     </Shell.BackButtonBehavior>
