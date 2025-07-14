@@ -6,104 +6,103 @@ using ServiceLayer.Interfaces;
 using System.Collections.ObjectModel;
 using VMLayer.Navigation;
 
-namespace VMLayer
+namespace VMLayer;
+
+public class OriginalListViewModel : ObservableObject, INavigationParameterReceiver
 {
-    public class OriginalListViewModel : ObservableObject, INavigationParameterReceiver
+    //Сервисы
+    private readonly IOriginalService originalService;
+    private readonly IDialogService dialogService;
+    private readonly INavigationService navigationService;
+
+    //Приватные поля
+    private OriginalListDto? _selectedOriginal;
+
+    //Свойства
+    public OriginalListDto? SelectedOriginal
     {
-        //Сервисы
-        private readonly IOriginalService originalService;
-        private readonly IDialogService dialogService;
-        private readonly INavigationService navigationService;
-
-        //Приватные поля
-        private OriginalListDto? _selectedOriginal;
-
-        //Свойства
-        public OriginalListDto? SelectedOriginal
+        get => _selectedOriginal;
+        set
         {
-            get => _selectedOriginal;
-            set
+            if (SetProperty(ref _selectedOriginal, value))
             {
-                if (SetProperty(ref _selectedOriginal, value))
+                DeleteCommand.NotifyCanExecuteChanged();
+                EditCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
+    public ObservableCollection<OriginalListDto> OriginalsList { get; set; } = [];
+
+    //Кнопки
+    public IAsyncRelayCommand CreateCommand { get; }
+    public IAsyncRelayCommand DeleteCommand { get; }
+    public IAsyncRelayCommand EditCommand { get; }
+    private async Task CreateOriginal() => await navigationService.GoToOriginalDetails();
+    private async Task DeleteOriginal()
+    {
+        if (SelectedOriginal != null)
+        {
+            var result = await dialogService.AskYesNo("Удаление данных", $"Вы действительно хотите удалить {SelectedOriginal!.OriginalName} {SelectedOriginal.OriginalCaption}?");
+            if (result)
+            {
+                //Удаление оригинала
+                var delResult = await originalService.DeleteOriginal(SelectedOriginal.Id);
+                if (delResult.IsSuccess)
                 {
-                    DeleteCommand.NotifyCanExecuteChanged();
-                    EditCommand.NotifyCanExecuteChanged();
-                }
-            }
-        }
-        public ObservableCollection<OriginalListDto> OriginalsList { get; set; } = [];
+                    //обновление списка
+                    OriginalsList.Remove(SelectedOriginal);
+                    SelectedOriginal = null;
 
-        //Кнопки
-        public IAsyncRelayCommand CreateCommand { get; }
-        public IAsyncRelayCommand DeleteCommand { get; }
-        public IAsyncRelayCommand EditCommand { get; }
-        private async Task CreateOriginal() => await navigationService.GoToOriginalDetails();
-        private async Task DeleteOriginal()
-        {
-            if (SelectedOriginal != null)
-            {
-                var result = await dialogService.AskYesNo("Удаление данных", $"Вы действительно хотите удалить {SelectedOriginal!.OriginalName} {SelectedOriginal.OriginalCaption}?");
-                if (result)
+                    await dialogService.Notify("Удалено", "Документ удалён");
+                }
+                else
                 {
-                    //Удаление оригинала
-                    var delResult = await originalService.DeleteOriginal(SelectedOriginal.Id);
-                    if (delResult.IsSuccess)
-                    {
-                        //обновление списка
-                        OriginalsList.Remove(SelectedOriginal);
-                        SelectedOriginal = null;
-
-                        await dialogService.Notify("Удалено", "Документ удалён");
-                    }
-                    else
-                    {
-                        await dialogService.Notify("Ошибка удаления", delResult.ErrorCode);
-                    }
-
+                    await dialogService.Notify("Ошибка удаления", delResult.ErrorCode);
                 }
+
             }
         }
-        private async Task EditOriginal()
+    }
+    private async Task EditOriginal()
+    {
+        if (SelectedOriginal != null)
         {
-            if (SelectedOriginal != null)
-            {
-                await navigationService.GoToOriginalDetails(SelectedOriginal.Id);
-            }
+            await navigationService.GoToOriginalDetails(SelectedOriginal.Id);
         }
-        private bool CanEditDeleteOriginal() => SelectedOriginal != null;
+    }
+    private bool CanEditDeleteOriginal() => SelectedOriginal != null;
 
-        //конструктор
-        public OriginalListViewModel(INavigationService navigation, IDialogService dialog, IOriginalService original)
+    //конструктор
+    public OriginalListViewModel(INavigationService navigation, IDialogService dialog, IOriginalService original)
+    {
+        originalService = original;
+        navigationService = navigation;
+        dialogService = dialog;
+
+        CreateCommand = new AsyncRelayCommand(CreateOriginal);
+        DeleteCommand = new AsyncRelayCommand(DeleteOriginal, CanEditDeleteOriginal);
+        EditCommand = new AsyncRelayCommand(EditOriginal, CanEditDeleteOriginal);
+
+        //Загружаем перовначальный список (УБРАТБ КОГДА СДЕЛАЕМ НОРМАЛЬНО)
+        LoadOriginalList();
+    }
+
+    private async Task LoadOriginalList()
+    {
+        var originallist = await originalService.GetOriginalListAsync();
+        if (originallist.IsSuccess)
         {
-            originalService = original;
-            navigationService = navigation;
-            dialogService = dialog;
-
-            CreateCommand = new AsyncRelayCommand(CreateOriginal);
-            DeleteCommand = new AsyncRelayCommand(DeleteOriginal, CanEditDeleteOriginal);
-            EditCommand = new AsyncRelayCommand(EditOriginal, CanEditDeleteOriginal);
-
-            //Загружаем перовначальный список (УБРАТБ КОГДА СДЕЛАЕМ НОРМАЛЬНО)
-            LoadOriginalList();
+            originallist.Data.ForEach(OriginalsList.Add);
         }
+    }
 
-        private async Task LoadOriginalList()
+    //обработка навигации
+    public Task OnNavigatedTo(Dictionary<string, object> parameters)
+    {
+        if (parameters.TryGetValue(NavParamConstants.OriginalList, out object? orig_list) && orig_list is OriginalListDto originalListDto)
         {
-            var originallist = await originalService.GetOriginalListAsync();
-            if (originallist.IsSuccess)
-            {
-                originallist.Data.ForEach(OriginalsList.Add);
-            }
+            UtilityService.UpdateList(OriginalsList, originalListDto);
         }
-
-        //обработка навигации
-        public Task OnNavigatedTo(Dictionary<string, object> parameters)
-        {
-            if (parameters.TryGetValue(NavParamConstants.OriginalList, out object? orig_list) && orig_list is OriginalListDto originalListDto)
-            {
-                UtilityService.UpdateList(OriginalsList, originalListDto);
-            }
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
