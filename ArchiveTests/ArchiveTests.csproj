@@ -31,10 +31,7 @@
     <ProjectReference Include="..\ArchiveModels\ArchiveModels.csproj" />
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="VMTests\" />
+    <ProjectReference Include="..\VMLayer\VMLayer.csproj" />
   </ItemGroup>
 
 </Project>
