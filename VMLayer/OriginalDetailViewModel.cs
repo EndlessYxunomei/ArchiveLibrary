@@ -97,7 +97,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     //Списки для выбора
     public ObservableCollection<PersonListDto> PersonList { get; set; } = [];
     public ObservableCollection<DocumentListDto> DocumentList { get; set; } = [];
-    public ObservableCollection<CompanyDto> Companylist { get; set; } = [];
+    public ObservableCollection<CompanyDto> CompanyList { get; set; } = [];
 
     //Кнопки добавления в списки
     public IAsyncRelayCommand AddDocumentCommand { get; }
@@ -201,7 +201,31 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     public async Task OnNavigatedTo(Dictionary<string, object> parameters)
     {
         //НАполение списков документов, компаний и пользователей
-        var newDocumentList = await documentService.GetDocumentListAsync(DocumentType.AddOriginal);
+        if (PersonList.Count == 0)
+        {
+            var newPersonList = await personService.GetPersonListAsync();
+            if (newPersonList.IsSuccess)
+            {
+                newPersonList.Data.ForEach(PersonList.Add);
+            }
+        }
+        if (DocumentList.Count == 0)
+        {
+            var newDocumentList = await documentService.GetDocumentListAsync(DocumentType.AddOriginal);
+            if (newDocumentList.IsSuccess)
+            {
+                newDocumentList.Data.ForEach(DocumentList.Add);
+            }
+        }
+        if (CompanyList.Count == 0)
+        {
+            var newCompanyList = await companyService.GetCompanyListAsync();
+            if (newCompanyList.IsSuccess)
+            {
+                newCompanyList.Data.ForEach(CompanyList.Add);
+            }
+        }
+        /**var newDocumentList = await documentService.GetDocumentListAsync(DocumentType.AddOriginal);
         var newCompanyList = await companyService.GetCompanyListAsync();
         var newPersonList = await personService.GetPersonListAsync();
         if (newPersonList.IsSuccess)
@@ -210,12 +234,12 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
         }
         if (newCompanyList.IsSuccess)
         {
-            newCompanyList.Data.ForEach(Companylist.Add);
+            newCompanyList.Data.ForEach(CompanyList.Add);
         }
         if (newDocumentList.IsSuccess)
         {
             newDocumentList.Data.ForEach(DocumentList.Add);
-        }
+        }**/
 
 
         if (parameters.TryGetValue(NavParamConstants.OriginalDetail, out object? value_orig) && value_orig is int origId)
@@ -246,7 +270,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
                 PageFormat = orig_res.Data.PageFormat;
                 PageCount = orig_res.Data.PageCount;
 
-                if (orig_res.Data.Company != null) Company = Companylist.FirstOrDefault(x => x.Id == orig_res.Data.Company.Id);
+                if (orig_res.Data.Company != null) Company = CompanyList.FirstOrDefault(x => x.Id == orig_res.Data.Company.Id);
                 if (orig_res.Data.Document != null) Document = DocumentList.FirstOrDefault(x => x.Id == orig_res.Data.Document.Id);
                 if (orig_res.Data.Person != null) Person = PersonList.FirstOrDefault(x => x.Id == orig_res.Data.Person.Id);
             }
@@ -261,7 +285,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
         }
         if (parameters.TryGetValue(NavParamConstants.CompanyList, out object? value_comp) && value_comp is CompanyDto company)
         {
-            UtilityService.UpdateList(Companylist, company);
+            UtilityService.UpdateList(CompanyList, company);
         }
         if (parameters.TryGetValue(NavParamConstants.PersonList, out object? value_per) && value_per is PersonListDto person)
         {
