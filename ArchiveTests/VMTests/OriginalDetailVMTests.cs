@@ -381,17 +381,15 @@ public class OriginalDetailVMTests
         documentService.GetDocumentListAsync(Arg.Any<DocumentType>()).Returns(Result<List<DocumentListDto>>.Success(test_document_list));
 
         var test_vm = new OriginalDetailViewModel(navigationService, dialogService, originalService, personService, companyService, documentService);
-        Dictionary<string, object> new_document = new()
-            { { NavParamConstants.DocumentList, new DocumentListDto() { Id = 3, Name = "test_document", DocumentType = DocumentType.AddOriginal } } };
-        Dictionary<string, object> new_company = new()
-            { { NavParamConstants.CompanyList, new CompanyDto() { Id = 3, Name = "test_company" } } };
-        Dictionary<string, object> new_person = new()
-            { { NavParamConstants.PersonList, new PersonListDto() { Id = 3, FullName = "test_person" } } };
+        Dictionary<string, object> nav_params = new()
+        {
+            { NavParamConstants.DocumentList, new DocumentListDto() { Id = 3, Name = "test_document", DocumentType = DocumentType.AddOriginal } },
+            { NavParamConstants.CompanyList, new CompanyDto() { Id = 3, Name = "test_company" } },
+            { NavParamConstants.PersonList, new PersonListDto() { Id = 3, FullName = "test_person" } }
+        };
 
         //Act
-        await test_vm.OnNavigatedTo(new_document);
-        await test_vm.OnNavigatedTo(new_company);
-        await test_vm.OnNavigatedTo(new_person);
+        await test_vm.OnNavigatedTo(nav_params);
 
         //Assert
         Assert.Equal(3, test_vm.DocumentList.Count);
