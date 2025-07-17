@@ -48,7 +48,13 @@ namespace ArchiveLibrary
             Routing.RegisterRoute(NavigationConstants.OriginalDetail, typeof(OriginalDetailPage));
             builder.Services.AddTransient<OriginalDetailPage>();
             builder.Services.AddTransient<OriginalDetailViewModel>();
-            
+            //Routing.RegisterRoute(NavigationConstants.DocumentDetail, typeof(DocumentDetailPage));
+            //builder.Services.AddTransient<DocumentDetailPage>();
+            builder.Services.AddTransient<DocumentDetailViewModel>();
+            //Routing.RegisterRoute(NavigationConstants.DocumentList, typeof(DocumentListPage));
+            //builder.Services.AddTransient<DocumentListPage>();
+            builder.Services.AddTransient<DocumentListViewModel>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

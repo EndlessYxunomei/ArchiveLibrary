@@ -76,7 +76,7 @@ namespace ArchiveTests.RepoTests
         #endregion
 
         [Fact]
-        public async Task DocumentListDtoCreatedCorrectly()
+        public async Task DocumentTypeListDtoCreatedCorrectly()
         {
             // Arrange
             using var context = CreateContext();
@@ -88,6 +88,21 @@ namespace ArchiveTests.RepoTests
             //Assert
             Assert.True(test_document_list.IsSuccess);
             Assert.Equal(3,test_document_list.Data.Count);
+            Assert.Equal("132", test_document_list.Data[2].Name);
+        }
+        [Fact]
+        public async Task DocumentListDtoCreatedCorrectly()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+
+            //Act
+            var test_document_list = await documentRepo.GetDocumentListAsync();
+
+            //Assert
+            Assert.True(test_document_list.IsSuccess);
+            Assert.Equal(12, test_document_list.Data.Count);
             Assert.Equal("132", test_document_list.Data[2].Name);
         }
         [Fact]

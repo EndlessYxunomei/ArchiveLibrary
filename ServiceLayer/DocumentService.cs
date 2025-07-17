@@ -39,6 +39,13 @@ public class DocumentService : IDocumentService
             ? Result<List<DocumentListDto>>.Success(document_list.Data)
             : Result<List<DocumentListDto>>.Fail(document_list.ErrorCode, document_list.ErrorData, document_list.Exception);
     }
+    public async Task<Result<List<DocumentListDto>>> GetDocumentListAsync()
+    {
+        var document_list = await documentRepo.GetDocumentListAsync();
+        return document_list.IsSuccess
+            ? Result<List<DocumentListDto>>.Success(document_list.Data)
+            : Result<List<DocumentListDto>>.Fail(document_list.ErrorCode, document_list.ErrorData, document_list.Exception);
+    }
 
     public async Task<Result<DocumentListDto>> UpsertDocument(DocumentDetailDto document)
     {
