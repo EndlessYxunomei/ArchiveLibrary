@@ -1,5 +1,6 @@
 ﻿using ArchiveDB;
 using ArchiveModels;
+using ArchiveModels.DTO;
 using DataLayer;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -88,6 +89,109 @@ namespace ArchiveTests.RepoTests
             Assert.True(test_document_list.IsSuccess);
             Assert.Equal(3,test_document_list.Data.Count);
             Assert.Equal("132", test_document_list.Data[2].Name);
+        }
+        [Fact]
+        public async Task GetDocumentDelailDtoCorrectly()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+
+            //Act
+            var res = await documentRepo.GetDocumentDetailAsync(1);
+
+            //Assert
+            Assert.True(res.IsSuccess);
+            Assert.Equal(DocumentType.AddOriginal, res.Data.DocumentType);
+        }
+        [Fact]
+        public async Task GetDocumentDtoCorrectly()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+
+            //Act
+            var res = await documentRepo.GetDocumentAsync(1);
+
+            //Assert
+            Assert.True(res.IsSuccess);
+            Assert.Equal(DocumentType.AddOriginal, res.Data.DocumentType);
+        }
+
+        [Fact]
+        public async Task CheckDocumentIsNotExists()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+
+            //Act
+            var res = await documentRepo.CheckDocument("132", new DateOnly(2000, 9, 15));
+
+            //Assert
+            Assert.False(res.IsSuccess);
+        }
+        [Fact]
+        public async Task CreateDocumentCorrectly()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+            var test_comapy = context.Companies.First();
+            DocumentDetailDto new_dto = new()
+            {
+                Id = 0,
+                DocumentType = DocumentType.AddOriginal,
+                Name = "Test",
+                Date = new DateTime(2020, 12, 31),
+                Description = "Test_description",
+                Company = (CompanyDto)test_comapy
+            };
+
+            //Act
+            var res = await documentRepo.UpsertDocument(new_dto);
+
+            //Assert
+            Assert.True(res.IsSuccess);
+            Assert.NotEqual(0, res.Data);
+        }
+        [Fact]
+        public async Task UpdateDocumentCorrectly()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+            var test_comapy = context.Companies.First(x => x.Id == 11);
+            DocumentDetailDto updated_dto = new()
+            {
+                Id = 5,
+                DocumentType = DocumentType.CreateCopy,
+                Name = "Test",
+                Date = new DateTime(2020, 12, 31),
+                Description = "Test_description",
+                Company = (CompanyDto)test_comapy
+            };
+
+            //Act
+            var res = await documentRepo.UpsertDocument(updated_dto);
+
+            //Assert
+            Assert.True(res.IsSuccess);
+            Assert.Equal(5, res.Data);
+        }
+        [Fact]
+        public async Task DeleteDocumentCorrectly()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var documentRepo = new DocumentRepo(context);
+
+            //Act
+            var res = await documentRepo.DeleteDocument(8);
+
+            //Assert
+            Assert.True(res.IsSuccess);
         }
     }
 }
