@@ -12,11 +12,9 @@ using VMLayer.Validation;
 
 namespace VMLayer;
 
-public class OriginalDetailViewModel: ObservableValidator, INavigationParameterReceiver
+public class OriginalDetailViewModel: BaseDetailViewModel
 {
     //Сервисы
-    private readonly INavigationService navigationService;
-    private readonly IDialogService dialogService;
     private readonly IOriginalService originalService;
     private readonly IPersonService personService;
     private readonly ICompanyService companyService;
@@ -126,9 +124,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
     }
 
     //Кнопки Сохранить и отмена
-    public IAsyncRelayCommand AcseptCommand { get; }
-    public IAsyncRelayCommand CancelCommand { get; }
-    private async Task SaveOriginal()
+    private protected override  async Task SaveChanges()
     {
         ValidateAllProperties();
         var isValidOriginalNumber = await originalService.CheckInventoryNumber(InventoryNumber);
@@ -155,7 +151,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
             var res = await originalService.UpsertOriginal(detailDto);
             if (res.IsSuccess)
             {
-                ErrorsChanged -= OriginalViewModel_ErrorsChanged;
+                ErrorsChanged -= ViewModel_ErrorsChanged;
                 await navigationService.GoBackAndReturn(new Dictionary<string, object>() { { NavParamConstants.OriginalList, res.Data } });
             }
             else
@@ -168,37 +164,26 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
             await dialogService.Notify("Ошибка", "Инвентарный номер занят" );
         }
     }
-    private async Task CancelOriginal()
-    {
-        ErrorsChanged -= OriginalViewModel_ErrorsChanged;
-        await navigationService.GoBack();
-    }
 
     //консруктор
     public OriginalDetailViewModel(INavigationService navigationService, IDialogService dialogService,
-        IOriginalService originalService, IPersonService personService, ICompanyService companyService, IDocumentService documentService)
+        IOriginalService originalService, IPersonService personService, ICompanyService companyService, IDocumentService documentService): base(navigationService, dialogService)
     {
-        this.navigationService = navigationService;
-        this.dialogService = dialogService;
         this.originalService = originalService;
         this.personService = personService;
         this.companyService = companyService;
         this.documentService = documentService;
 
-        AcseptCommand = new AsyncRelayCommand(SaveOriginal, () => !HasErrors);
-        CancelCommand = new AsyncRelayCommand(CancelOriginal);
         AddCompanyCommand = new AsyncRelayCommand(AddCompany);
         AddDocumentCommand = new AsyncRelayCommand(AddDocument);
         AddPersonCommand = new AsyncRelayCommand(AddPerson);
 
         ErrorExposer = new(this);
 
-        ErrorsChanged += OriginalViewModel_ErrorsChanged;
-        ValidateAllProperties();
     }
 
     //Обработка навигации на страницу
-    public async Task OnNavigatedTo(Dictionary<string, object> parameters)
+    public override async Task OnNavigatedTo(Dictionary<string, object> parameters)
     {
         //НАполение списков документов, компаний и пользователей
         if (PersonList.Count == 0)
@@ -254,7 +239,7 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
                 else
                 {
                     await dialogService.Notify("Ошибка", newInventoryNumber.ErrorCode);
-                    await CancelOriginal();
+                    await CancelChanges();
                 }
                 return;
             }
@@ -293,6 +278,4 @@ public class OriginalDetailViewModel: ObservableValidator, INavigationParameterR
         }
         //return Task.CompletedTask;
     }
-    //Обработка валидатора
-    private void OriginalViewModel_ErrorsChanged(object? sender, DataErrorsChangedEventArgs e) => AcseptCommand.NotifyCanExecuteChanged();
 }

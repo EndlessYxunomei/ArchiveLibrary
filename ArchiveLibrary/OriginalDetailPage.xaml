@@ -137,7 +137,7 @@
             </HorizontalStackLayout>
             <HorizontalStackLayout Padding="5" Spacing="5">
                 <Label Text="Держатель подлинника:"/>
-                <Picker ItemsSource="{Binding Companylist}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Company}" WidthRequest="300"/>
+                <Picker ItemsSource="{Binding CompanyList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Company}" WidthRequest="300"/>
                 <Button Text="&#xe145;" FontFamily="MaterialIconsRegular" FontSize="20" Command="{Binding AddCompanyCommand}"/>
             </HorizontalStackLayout>
             <HorizontalStackLayout Padding="5" Spacing="5">
