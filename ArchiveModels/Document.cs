@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ArchiveModels.DTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace ArchiveModels;
 
@@ -16,6 +17,19 @@ public class Document : FullAuditableModel
     public virtual Company? Company { get; set; }
     //Тип документа
     public DocumentType DocumentType { get; set; }
+
+    public static explicit operator Document(DocumentDetailDto dto)
+    {
+        return new Document()
+        { 
+            Id = dto.Id,
+            Name = dto.Name,
+            Description = dto.Description,
+            Date = new DateOnly(dto.Date.Year, dto.Date.Month, dto.Date.Day),
+            CompanyId = dto.Company!.Id,
+            DocumentType = dto.DocumentType
+        };
+    }
 }
 public enum DocumentType
 {

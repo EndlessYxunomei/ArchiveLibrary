@@ -26,5 +26,8 @@ namespace ArchiveLibrary.Services
 
         public Task GoToOriginalDetails(int id = 0) => Navigate(NavigationConstants.OriginalDetail, new() { { NavParamConstants.OriginalDetail, id } });
         public Task GoToOriginalList() => Navigate(NavigationConstants.OriginalList);
+
+        public Task GoToDocumentDetails(int id = 0) => Navigate(NavigationConstants.DocumentDetail, new() { { NavParamConstants.DocumentDetail, id } });
+
     }
 }

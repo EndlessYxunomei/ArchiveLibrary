@@ -60,7 +60,6 @@ public class OriginalDetailVMTests
         //Assert
         await navigationService.Received().GoBack();
     }
-
     [Fact]
     public async Task SaveOriginalTest()
     {
@@ -112,7 +111,6 @@ public class OriginalDetailVMTests
         await navigationService.ReceivedWithAnyArgs().GoBackAndReturn(Arg.Any<Dictionary<string,object>>());
     }
 
-    //ещё не реализовано в модели
     [Fact]
     public async Task AddDocumentTest()
     {
@@ -150,11 +148,13 @@ public class OriginalDetailVMTests
         var test_vm = new OriginalDetailViewModel(navigationService, dialogService, originalService, personService, companyService, documentService);
 
         //Act
-
+        await test_vm.AddDocumentCommand.ExecuteAsync(null);
 
         //Assert
+        await navigationService.Received().GoToDocumentDetails(0);
 
     }
+    //ещё не реализовано в модели
     [Fact]
     public async Task AddCompanyTest()
     {
@@ -197,6 +197,7 @@ public class OriginalDetailVMTests
         //Assert
 
     }
+    //ещё не реализовано в модели
     [Fact]
     public async Task AddPersonTest()
     {

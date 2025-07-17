@@ -11,4 +11,5 @@ public interface INavigationService
     //навигация на конкретные старницы
     Task GoToOriginalDetails(int id = 0);
     Task GoToOriginalList();
+    Task GoToDocumentDetails(int id = 0);
 }

@@ -104,8 +104,7 @@ public class OriginalDetailViewModel: BaseDetailViewModel
 
     private async Task AddDocument()
     {
-        //await navigationService.GoToCreateDocument();
-        await Task.Delay(10);//ЗАглушка
+        await navigationService.GoToDocumentDetails();
     }
     private async Task AddCompany()
     {
@@ -126,12 +125,10 @@ public class OriginalDetailViewModel: BaseDetailViewModel
     //Кнопки Сохранить и отмена
     private protected override  async Task SaveChanges()
     {
-        ValidateAllProperties();
         var isValidOriginalNumber = await originalService.CheckInventoryNumber(InventoryNumber);
 
-        if(!HasErrors &&
-            ((id == 0 && isValidOriginalNumber.IsSuccess)
-            || ( id != 0 && ( oldInventoryNumber == InventoryNumber || isValidOriginalNumber.IsSuccess) )))
+        if((id == 0 && isValidOriginalNumber.IsSuccess)
+            || ( id != 0 && ( oldInventoryNumber == InventoryNumber || isValidOriginalNumber.IsSuccess) ))
         {
             OriginalDetailDto detailDto = new()
             {
