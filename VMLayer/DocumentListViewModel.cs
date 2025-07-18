@@ -49,7 +49,7 @@ public class DocumentListViewModel : ObservableObject, INavigationParameterRecei
     {
         if (SelectedDocument != null)
         {
-            var result = await dialogService.AskYesNo("Удаление данных", $"Вы действительно хотите удалить {SelectedDocument.Name} от {SelectedDocument.Date : d}?");
+            var result = await dialogService.AskYesNo("Удаление данных", $"Вы действительно хотите удалить {SelectedDocument.Name} от {SelectedDocument.Date:dd.MM.yyyy}?");
             if (result)
             {
                 //Удаление оригинала
