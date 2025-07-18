@@ -44,5 +44,7 @@ public class CompanyService : ICompanyService
     }
 
     public Task<Result<Nothing>> DeleteCompany(int companyId) => companyRepo.DeleteCompany(companyId);
+
+    public Task<Result<Nothing>> CheckCompany(string name) => companyRepo.CheckCompany(name);
 }
 
