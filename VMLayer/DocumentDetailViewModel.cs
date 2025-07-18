@@ -1,6 +1,7 @@
 ﻿using ArchiveModels;
 using ArchiveModels.DTO;
 using CommunityToolkit.Mvvm.Input;
+using ServiceLayer;
 using ServiceLayer.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -69,14 +70,7 @@ public class DocumentDetailViewModel: BaseDetailViewModel
     public IAsyncRelayCommand AddCompanyCommand { get; }
     private async Task AddCompany()
     {
-        //var result = await dialogService.ShowCompanyDetailPopup();
-        //if (result != null && result is CompanyDto company)
-        //{
-        //    var newid = await companyService.UpsertCompany(company);
-        //    var newDto = await companyService.GetCompanyAsync(newid);
-        //    UtilityService.UpdateList(Companylist, newDto);
-        //}
-        await Task.CompletedTask;
+        await navigationService.GoToCompanyDetails();
     }
 
     //Кнопка сохранить
@@ -162,6 +156,10 @@ public class DocumentDetailViewModel: BaseDetailViewModel
             {
                 await dialogService.Notify("Ошибка", doc_res.ErrorCode);
             }
+        }
+        if (parameters.TryGetValue(NavParamConstants.CompanyList, out object? value_comp) && value_comp is CompanyDto company)
+        {
+            UtilityService.UpdateList(CompanyList, company);
         }
     }
 }

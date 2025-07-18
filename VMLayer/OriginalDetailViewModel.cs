@@ -108,14 +108,7 @@ public class OriginalDetailViewModel: BaseDetailViewModel
     }
     private async Task AddCompany()
     {
-        //var result = await dialogService.ShowCompanyDetailPopup();
-        //if (result != null && result is CompanyDto company)
-        //{
-        //    var newid = await companyService.UpsertCompany(company);
-        //    var newDto = await companyService.GetCompanyAsync(newid);
-        //    UtilityService.UpdateList(Companylist, newDto);
-        //}
-        await Task.Delay(10);//ЗАглушка
+        await navigationService.GoToCompanyDetails();
     }
     private async Task AddPerson()
     {
