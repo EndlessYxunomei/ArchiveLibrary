@@ -6,7 +6,7 @@ public class NavParamConstants
     public const string DocumentList = "document_list";
     public const string CompanyList = "company_list";
     public const string PersonList = "person_list";
-
+    public const string CompanyDetail = "company_detail";
     public const string OriginalDetail = "original_detail";
     public const string CorrectionDeatil = "correction_detail";
     public const string CorrectionList = "correction_list";
