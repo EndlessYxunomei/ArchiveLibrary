@@ -19,6 +19,14 @@ public class CompanyService : ICompanyService
         companyRepo = new CompanyRepo(context);
     }
 
+    public async Task<Result<CompanyDto>> GetCompanyAsync(int companyId)
+    {
+        var res = await companyRepo.GetCompanyAsync(companyId);
+        return res.IsSuccess
+            ? Result<CompanyDto>.Success(res.Data)
+            : Result<CompanyDto>.Fail(res.ErrorCode, res.ErrorData, res.Exception); ;
+    }
+
     public async Task<Result<List<CompanyDto>>> GetCompanyListAsync()
     {
         var company_list = await companyRepo.GetCompanyListAsync();
@@ -26,5 +34,15 @@ public class CompanyService : ICompanyService
             ? Result<List<CompanyDto>>.Success(company_list.Data)
             : Result<List<CompanyDto>>.Fail(company_list.ErrorCode, company_list.ErrorData, company_list.Exception);
     }
+
+    public async Task<Result<CompanyDto>> UpsertCompany(CompanyDto companyDto)
+    {
+        var newCompany = await companyRepo.UpsertCompany(companyDto);
+        return newCompany.IsSuccess
+            ? Result<CompanyDto>.Success(newCompany.Data)
+            : Result<CompanyDto>.Fail(newCompany.ErrorCode, newCompany.ErrorData, newCompany.Exception);
+    }
+
+    public Task<Result<Nothing>> DeleteCompany(int companyId) => companyRepo.DeleteCompany(companyId);
 }
 
