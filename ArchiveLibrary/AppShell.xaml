@@ -4,15 +4,21 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ArchiveLibrary"
-    Shell.FlyoutBehavior="Disabled"
-    Title="ArchiveLibrary">
+    Shell.FlyoutBehavior="Flyout"
+    Title="Archive Library">
 
     <!--<ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />-->
-    <ShellContent
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Инвентарная книга" ContentTemplate="{DataTemplate local:OriginalListPage}"/>
+    </FlyoutItem>
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Документы" ContentTemplate="{DataTemplate local:DocumentListPage}"/>
+    </FlyoutItem>
+    <!--<ShellContent
         Title="Инвентарная книга"
         ContentTemplate="{DataTemplate local:OriginalListPage}"
-        Route="OriginalList" />
+        Route="OriginalList" />-->
 </Shell>
