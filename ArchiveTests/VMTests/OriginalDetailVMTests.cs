@@ -154,7 +154,6 @@ public class OriginalDetailVMTests
         await navigationService.Received().GoToDocumentDetails(0);
 
     }
-    //ещё не реализовано в модели
     [Fact]
     public async Task AddCompanyTest()
     {
@@ -192,10 +191,10 @@ public class OriginalDetailVMTests
         var test_vm = new OriginalDetailViewModel(navigationService, dialogService, originalService, personService, companyService, documentService);
 
         //Act
-
+        await test_vm.AddCompanyCommand.ExecuteAsync(null);
 
         //Assert
-
+        await navigationService.Received().GoToCompanyDetails(0);
     }
     //ещё не реализовано в модели
     [Fact]
@@ -235,9 +234,10 @@ public class OriginalDetailVMTests
         var test_vm = new OriginalDetailViewModel(navigationService, dialogService, originalService, personService, companyService, documentService);
 
         //Act
-
+        await test_vm.AddPersonCommand.ExecuteAsync(null);
 
         //Assert
+        //await navigationService.Received().GoToDocumentDetails(0);
 
     }
     
