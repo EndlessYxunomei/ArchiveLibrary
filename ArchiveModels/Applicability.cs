@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ArchiveModels.DTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace ArchiveModels;
 
@@ -9,4 +10,13 @@ public class Applicability : FullAuditableModel
     //Применяемость
     [StringLength(ArchiveConstants.MAX_DESCRIPTION_LENGTH)]
     public required string Description { get; set; }
+
+    public static explicit operator Applicability(ApplicabilityDto dto)
+    {
+        return new Applicability()
+        { 
+            Description = dto.Description,
+            Id = dto.Id,
+        };
+    }
 }
