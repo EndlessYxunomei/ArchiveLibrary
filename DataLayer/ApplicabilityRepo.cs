@@ -16,11 +16,13 @@ public class ApplicabilityRepo(ArchiveDbContext context) : IApplicabilityRepo
         try
         {
             var exist_applicability = await _context.Applicabilities
+                .Include(x => x.Originals)
                 .FirstOrDefaultAsync(x => x.Id == id);
             var newOriginal = await _context.Originals
+                .Include(x => x.Applicabilities)
                 .FirstOrDefaultAsync(x => x.Id == originalId);
 
-            if (exist_applicability == null || newOriginal == null || exist_applicability.Originals.Any(x => x.Id == newOriginal.Id) == false)
+            if (exist_applicability == null || newOriginal == null || exist_applicability.Originals.Any(x => x.Id == newOriginal.Id))
             {
                 return Result<Nothing>.Fail("Can not add Applicability", $"Applicability Repo. Applicability id={id}, original id={originalId} not found"
                     + " or original already has this applicability.");
@@ -75,6 +77,7 @@ public class ApplicabilityRepo(ArchiveDbContext context) : IApplicabilityRepo
         try
         {
             var exist_applicability = await _context.Applicabilities
+                .Include(x => x.Originals)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (exist_applicability == null)
