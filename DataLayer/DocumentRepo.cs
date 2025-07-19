@@ -88,16 +88,9 @@ public class DocumentRepo(ArchiveDbContext context) : IDocumentRepo
 
     public async Task<Result<int>> UpsertDocument(DocumentDetailDto document)
     {
-        try
-        {
-            return document.Id > 0
-                ? await UpdateDocument(document)
-                : await CreateDocument(document);
-        }
-        catch (Exception ex)
-        {
-            return Result<int>.Fail(ex);
-        }
+        return document.Id > 0
+        ? await UpdateDocument(document)
+        : await CreateDocument(document);
     }
     private async Task<Result<int>> CreateDocument(DocumentDetailDto document)
     {

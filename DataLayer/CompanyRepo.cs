@@ -44,18 +44,10 @@ public class CompanyRepo(ArchiveDbContext context) : ICompanyRepo
 
     public async Task<Result<CompanyDto>> UpsertCompany(CompanyDto company)
     {
-        try
-        {
-            return company.Id > 0
-                ? await UpdateCompany(company)
-                : await CreateCompany(company);
-        }
-        catch (Exception ex)
-        {
-            return Result<CompanyDto>.Fail(ex);
-        }
+        return company.Id > 0
+            ? await UpdateCompany(company)
+            : await CreateCompany(company);
     }
-
     private async Task<Result<CompanyDto>> CreateCompany(CompanyDto company)
     {
         try

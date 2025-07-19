@@ -347,16 +347,9 @@ public class OriginalRepo(ArchiveDbContext context) : IOriginalRepo
     //Create Update Delete
     public async Task<Result<int>> UpsertOriginal(OriginalDetailDto original)
     {
-        try
-        {
-            return original.Id > 0
-                ? await UpdateOriginal(original)
-                : await CreateOriginal(original);
-        }
-        catch (Exception ex)
-        {
-            return Result<int>.Fail(ex);
-        }
+        return original.Id > 0
+            ? await UpdateOriginal(original)
+            : await CreateOriginal(original);
     }
     private async Task<Result<int>> CreateOriginal(OriginalDetailDto original)
     {
