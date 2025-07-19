@@ -49,7 +49,7 @@ public class ApplicabilityListViewModel : ObservableValidator
     }
     private async Task EditApplicability()
     {
-        var dialog_result = await dialogService.Ask("Создание применимости", "Введите новую применимость",
+        var dialog_result = await dialogService.Ask("Редактирование применимости", "Введите новую применимость",
             SelectedApplicability!.Description, ArchiveConstants.MAX_DESCRIPTION_LENGTH);
 
         await UpdateApplicabilityList(dialog_result, SelectedApplicability.Description);
