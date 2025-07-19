@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VMLayer.Navigation;
+﻿using VMLayer.Navigation;
 
 namespace ArchiveLibrary.Services
 {
     public class DialogServiceMAUI : IDialogService
     {
         //базовые сообщения
-        public async Task<string?> Ask(string title, string message, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
+        public async Task<string> Ask(string title, string message, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
         {
             return await Shell.Current.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText);
             //для этого убрать асинк
             //return await Application.Current?.MainPage?.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText) ?? throw new NullReferenceException();
+        }
+        public async Task<string> Ask(string title, string message, int maxLength = 100, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
+        {
+            return await Shell.Current.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText, maxLength: maxLength);
+        }
+        public async Task<string> Ask(string title, string message, string oldMessage, int maxLength = 100, string accepButtonText = "ОК", string cancelButtonText = "Отмена")
+        {
+            return await Shell.Current.DisplayPromptAsync(title, message, accepButtonText, cancelButtonText, maxLength: maxLength, initialValue: oldMessage);
         }
         public async Task<bool> AskYesNo(string title, string message, string trueButtonText = "Да", string falseButtonText = "Нет")
         {
@@ -27,10 +30,10 @@ namespace ArchiveLibrary.Services
 
         //специальные всплывашки
         //ранее использовался IPopupService от MAUITollkit
-        public Task ClosePopup(object? popupView, object? parameters = null)
-        {
-            //заглушка
-            return Task.CompletedTask;
-        }
+        //public Task ClosePopup(object? popupView, object? parameters = null)
+        //{
+        //    //заглушка
+        //    return Task.CompletedTask;
+        //}
     }
 }
