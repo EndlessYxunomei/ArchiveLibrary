@@ -21,43 +21,13 @@ public class OriginalService : IOriginalService
     }
 
     //получение единичных объектов
-    public async Task<Result<OriginalDetailDto>> GetOriginalDetailAsync(int id)
-    {
-        var res = await originalRepo.GetOriginalDetailAsync(id);
-        return res.IsSuccess
-            ? Result<OriginalDetailDto>.Success(res.Data)
-            : Result<OriginalDetailDto>.Fail(res.ErrorCode, res.ErrorData, res.Exception);
-    }
-    public async Task<Result<OriginalListDto>> GetOriginalAsync(int id)
-    {
-        var res = await originalRepo.GetOriginalAsync(id);
-        return res.IsSuccess
-            ? Result<OriginalListDto>.Success(res.Data)
-            : Result<OriginalListDto>.Fail(res.ErrorCode, res.ErrorData, res.Exception);
-    }
+    public async Task<Result<OriginalDetailDto>> GetOriginalDetailAsync(int id) => await originalRepo.GetOriginalDetailAsync(id);
+    public async Task<Result<OriginalListDto>> GetOriginalAsync(int id) => await originalRepo.GetOriginalAsync(id);
 
     //получение списков
-    public async Task<Result<List<OriginalListDto>>> GetOriginalListAsync()
-    {
-        var originalList = await originalRepo.GetOriginalList();
-        return originalList.IsSuccess
-            ? Result<List<OriginalListDto>>.Success(originalList.Data)
-            : Result<List<OriginalListDto>>.Fail(originalList.ErrorCode, originalList.ErrorData, originalList.Exception);
-    }
-    public async Task<Result<List<OriginalListDto>>> GetOriginalsByCompany(int companyId)
-    {
-        var originalList = await originalRepo.GetOriginalsByCompany(companyId);
-        return originalList.IsSuccess
-            ? Result<List<OriginalListDto>>.Success(originalList.Data)
-            : Result<List<OriginalListDto>>.Fail(originalList.ErrorCode, originalList.ErrorData, originalList.Exception);
-    }
-    public async Task<Result<List<OriginalListDto>>> GetOriginalsByApplicability(int applicabilityId)
-    {
-        var originalList = await originalRepo.GetOriginalsByApplicability(applicabilityId);
-        return originalList.IsSuccess
-            ? Result<List<OriginalListDto>>.Success(originalList.Data)
-            : Result<List<OriginalListDto>>.Fail(originalList.ErrorCode, originalList.ErrorData, originalList.Exception);
-    }
+    public async Task<Result<List<OriginalListDto>>> GetOriginalListAsync() => await originalRepo.GetOriginalList();
+    public async Task<Result<List<OriginalListDto>>> GetOriginalsByCompany(int companyId) => await originalRepo.GetOriginalsByCompany(companyId);
+    public async Task<Result<List<OriginalListDto>>> GetOriginalsByApplicability(int applicabilityId) => await originalRepo.GetOriginalsByApplicability(applicabilityId);
 
     //создание обновление и удаление
     public async Task<Result<OriginalListDto>> UpsertOriginal(OriginalDetailDto originalDetailDto)
@@ -76,6 +46,8 @@ public class OriginalService : IOriginalService
         return Result<OriginalListDto>.Fail(newOriginalId.ErrorCode, newOriginalId.ErrorData, newOriginalId.Exception);
     }
     public async Task<Result<Nothing>> DeleteOriginal(int id) => await originalRepo.DeleteOriginal(id);
+
+    //возможно не потребуется
     public async Task<Result<Nothing>> UpdateOriginalsApplicabilities(int id, List<ApplicabilityDto> applicabilityDtos)
     {
         List<int> applicabilityIds = [];

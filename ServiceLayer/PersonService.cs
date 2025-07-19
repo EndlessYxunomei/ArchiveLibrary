@@ -5,7 +5,6 @@ using DataLayer;
 using DataLayer.Interfaces;
 using ServiceLayer.Interfaces;
 
-
 namespace ServiceLayer;
 
 public class PersonService : IPersonService
@@ -19,12 +18,6 @@ public class PersonService : IPersonService
     {
         personRepo = new PersonRepo(context);
     }
-    
-    public async Task<Result<List<PersonListDto>>> GetPersonListAsync()
-    {
-        var person_list = await personRepo.GetPersonListAsync();
-        return person_list.IsSuccess
-            ? Result<List<PersonListDto>>.Success(person_list.Data)
-            : Result<List<PersonListDto>>.Fail(person_list.ErrorCode, person_list.ErrorData, person_list.Exception);
-    }
+
+    public async Task<Result<List<PersonListDto>>> GetPersonListAsync() => await personRepo.GetPersonListAsync();
 }

@@ -24,28 +24,10 @@ public class DocumentService : IDocumentService
 
     public async Task<Result<Nothing>> DeleteDocument(int id) => await documentRepo.DeleteDocument(id);
 
-    public async Task<Result<DocumentDetailDto>> GetDocumentDetailAsync(int id)
-    {
-        var res = await documentRepo.GetDocumentDetailAsync(id);
-        return res.IsSuccess
-            ? Result<DocumentDetailDto>.Success(res.Data)
-            : Result<DocumentDetailDto>.Fail(res.ErrorCode, res.ErrorData, res.Exception);
-    }
+    public async Task<Result<DocumentDetailDto>> GetDocumentDetailAsync(int id) => await documentRepo.GetDocumentDetailAsync(id);
 
-    public async Task<Result<List<DocumentListDto>>> GetDocumentListAsync(DocumentType type)
-    {
-        var document_list = await documentRepo.GetDocumentListAsync(type);
-        return document_list.IsSuccess
-            ? Result<List<DocumentListDto>>.Success(document_list.Data)
-            : Result<List<DocumentListDto>>.Fail(document_list.ErrorCode, document_list.ErrorData, document_list.Exception);
-    }
-    public async Task<Result<List<DocumentListDto>>> GetDocumentListAsync()
-    {
-        var document_list = await documentRepo.GetDocumentListAsync();
-        return document_list.IsSuccess
-            ? Result<List<DocumentListDto>>.Success(document_list.Data)
-            : Result<List<DocumentListDto>>.Fail(document_list.ErrorCode, document_list.ErrorData, document_list.Exception);
-    }
+    public async Task<Result<List<DocumentListDto>>> GetDocumentListAsync(DocumentType type) => await documentRepo.GetDocumentListAsync(type);
+    public async Task<Result<List<DocumentListDto>>> GetDocumentListAsync() => await documentRepo.GetDocumentListAsync();
 
     public async Task<Result<DocumentListDto>> UpsertDocument(DocumentDetailDto document)
     {
