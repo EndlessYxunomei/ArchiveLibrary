@@ -31,16 +31,16 @@ public class DocumentService : IDocumentService
 
     public async Task<Result<DocumentListDto>> UpsertDocument(DocumentDetailDto document)
     {
-        var newDicumentId = await documentRepo.UpsertDocument(document);
-        if (newDicumentId.IsSuccess)
+        var newDocumentId = await documentRepo.UpsertDocument(document);
+        if (newDocumentId.IsSuccess)
         {
-            var newDocument = await documentRepo.GetDocumentAsync(newDicumentId.Data);
+            var newDocument = await documentRepo.GetDocumentAsync(newDocumentId.Data);
             if (newDocument.IsSuccess)
             {
                 return Result<DocumentListDto>.Success(newDocument.Data);
             }
             return Result<DocumentListDto>.Fail(newDocument.ErrorCode, newDocument.ErrorData, newDocument.Exception);
         }
-        return Result<DocumentListDto>.Fail(newDicumentId.ErrorCode, newDicumentId.ErrorData, newDicumentId.Exception);
+        return Result<DocumentListDto>.Fail(newDocumentId.ErrorCode, newDocumentId.ErrorData, newDocumentId.Exception);
     }
 }
