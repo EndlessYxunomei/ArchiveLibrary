@@ -38,6 +38,7 @@ public class CompanyDetailViewModel : BaseDetailViewModel
     //кнопка сохранить
     private protected override async Task SaveChanges()
     {
+        if (HasErrors) { return; }
         var CompanyIsNotExists = await companyService.CheckCompany(Name);
 
         if ((id == 0 && CompanyIsNotExists.IsSuccess)

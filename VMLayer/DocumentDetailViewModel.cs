@@ -76,6 +76,7 @@ public class DocumentDetailViewModel: BaseDetailViewModel
     //Кнопка сохранить
     private protected override async Task SaveChanges()
     {
+        if (HasErrors) { return; }
         var documentIsNotExists = await documentService.CheckDocument(Name, new(Date.Year, Date.Month, Date.Day));
 
         if ((id == 0 && documentIsNotExists.IsSuccess)

@@ -44,7 +44,7 @@ public class PersonRepo(ArchiveDbContext context) : IPersonRepo
         }
         throw new NotImplementedException();
     }
-    public async Task<Result<PersonDetailDto>> GetPersonDetaliAsync(int id)
+    public async Task<Result<PersonDetailDto>> GetPersonDetailAsync(int id)
     {
         try
         {

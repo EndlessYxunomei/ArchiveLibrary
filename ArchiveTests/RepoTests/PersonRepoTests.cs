@@ -1,4 +1,5 @@
 ﻿using ArchiveDB;
+using ArchiveModels.DTO;
 using DataLayer;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -28,21 +29,12 @@ public class PersonRepoTests: IDisposable
         // Create the schema and seed some data
         using var context = new ArchiveDbContext(_contextOptions);
 
-//        if (context.Database.EnsureCreated())
-//        {
-//            using var viewCommand = context.Database.GetDbConnection().CreateCommand();
-//            viewCommand.CommandText = @"
-//CREATE VIEW AllResources AS
-//SELECT Url
-//FROM Blogs;";
-//            viewCommand.ExecuteNonQuery();
-//        }
-
         context.People.AddRange(
             new() { LastName = "Пестрецов", FirstName = "Глеб", Department = "ПО" },
             new() { LastName = "Шестаков", FirstName = "Александр", Department = "ОМТО" },
             new() { LastName = "Крутик", FirstName = "Владимир", Department = "ПБ" },
-            new() { LastName = "Царев", FirstName = "Алексей", Department = "ПО" });
+            new() { LastName = "Царев", FirstName = "Алексей", Department = "ПО" },
+            new() { LastName = "Дмитревский", FirstName = "Александр", Department = "ОУК" });
         context.SaveChanges();
     }
 
@@ -54,7 +46,6 @@ public class PersonRepoTests: IDisposable
         GC.SuppressFinalize(this);
     }
     #endregion
-
 
     [Fact]
     public async Task PersonListDtoCreatedCorrectly()
@@ -88,6 +79,103 @@ public class PersonRepoTests: IDisposable
 
         //Assert
         Assert.True(test_person_list.IsSuccess);
-        Assert.Equal(4, test_person_list.Data.Count);
+        Assert.Equal(5, test_person_list.Data.Count);
+    }
+
+    [Fact]
+    public async Task GetPersonDelailCorrectly()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var personRepo = new PersonRepo(context);
+
+        //Act
+        var res = await personRepo.GetPersonDetailAsync(2);
+
+        //Assert
+        Assert.True(res.IsSuccess);
+        Assert.Equal("Шестаков", res.Data.LastName);
+    }
+    [Fact]
+    public async Task GetPersonListCorrectly()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var personRepo = new PersonRepo(context);
+
+        //Act
+        var res = await personRepo.GetPersonAsync(2);
+
+        //Assert
+        Assert.True(res.IsSuccess);
+        Assert.Equal("Шестаков Александр", res.Data.FullName);
+    }
+    [Fact]
+    public async Task CheckPersonIsNotExists()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var personRepo = new PersonRepo(context);
+
+        //Act
+        var res = await personRepo.CheckPersonFullName("Крутик", "Владимир");
+
+        //Assert
+        Assert.False(res.IsSuccess);
+    }
+    [Fact]
+    public async Task CreatePersonCorrectly()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var personRepo = new PersonRepo(context);
+        PersonDetailDto test_dto = new()
+        {
+            LastName = "test_last",
+            FirstName = "test_first",
+            Department = "test_dep",
+            Id = 0
+        };
+
+        //Act
+        var res = await personRepo.UpsertPerson(test_dto);
+
+        //Assert
+        Assert.True(res.IsSuccess);
+        Assert.NotEqual(0, res.Data);
+    }
+    [Fact]
+    public async Task UpdatePersonCorrectly()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var personRepo = new PersonRepo(context);
+        PersonDetailDto test_dto = new()
+        {
+            LastName = "test_last",
+            FirstName = "test_first",
+            Department = "test_dep",
+            Id = 4
+        };
+
+        //Act
+        var res = await personRepo.UpsertPerson(test_dto);
+
+        //Assert
+        Assert.True(res.IsSuccess);
+        Assert.Equal(4, res.Data);
+    }
+    [Fact]
+    public async Task DeletePersonCorrectly()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var personRepo = new PersonRepo(context);
+
+        //Act
+        var res = await personRepo.DeletePerson(5);
+
+        //Assert
+        Assert.True(res.IsSuccess);
     }
 }

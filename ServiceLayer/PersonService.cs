@@ -23,7 +23,7 @@ public class PersonService : IPersonService
 
     public async Task<Result<Nothing>> DeletePerson(int id) => await personRepo.DeletePerson(id);
 
-    public async Task<Result<PersonDetailDto>> GetPersonDetaliAsync(int id) => await personRepo.GetPersonDetaliAsync(id);
+    public async Task<Result<PersonDetailDto>> GetPersonDetailAsync(int id) => await personRepo.GetPersonDetailAsync(id);
 
     public async Task<Result<List<PersonListDto>>> GetPersonListAsync() => await personRepo.GetPersonListAsync();
 

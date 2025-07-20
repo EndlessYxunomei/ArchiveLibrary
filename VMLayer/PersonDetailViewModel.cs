@@ -30,7 +30,7 @@ public class PersonDetailViewModel : BaseDetailViewModel
     [Required]
     [StringLength(ArchiveConstants.MAX_PERSON_NAME_LENGTH)]
     [MinLength(1)]
-    public required string LastName
+    public string LastName
     {
         get => _lastName;
         set => SetProperty(ref _lastName, value, true);
@@ -47,8 +47,9 @@ public class PersonDetailViewModel : BaseDetailViewModel
     //кнопка сохранить
     private protected override async Task SaveChanges()
     {
+        if (HasErrors) { return; }
         var PersonIsNotExists = await personService.CheckPersonFullName(LastName, FirstName);
-
+        
         if ((id == 0 && PersonIsNotExists.IsSuccess)
             || (id != 0 && ((LastName == oldLastName && FirstName == oldFirstName) || PersonIsNotExists.IsSuccess)))
         {
@@ -95,7 +96,7 @@ public class PersonDetailViewModel : BaseDetailViewModel
             }
 
             id = perId;
-            var per_res = await personService.GetPersonDetaliAsync(perId);
+            var per_res = await personService.GetPersonDetailAsync(perId);
             if (per_res.IsSuccess)
             {
                 LastName = per_res.Data.LastName;

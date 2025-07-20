@@ -58,7 +58,15 @@ public class DocumentDetailVMTests
         documentService.CheckDocument(Arg.Any<string>(), default).ReturnsForAnyArgs(Result<Nothing>.Success());
         documentService.UpsertDocument(Arg.Any<DocumentDetailDto>()).ReturnsForAnyArgs(Result<DocumentListDto>.Success(test_dto));
 
-        var test_vm = new DocumentDetailViewModel(navigationService, dialogService, documentService, companyService);
+        var test_vm = new DocumentDetailViewModel(navigationService, dialogService, documentService, companyService)
+        {
+            Name = "test1",
+            Description = "test_d",
+            Date = DateTime.Now,
+            DocumentType = DocumentType.AddCorrection,
+            Company = test_company_list[0]
+            
+        };
 
         //Act
         await test_vm.AcseptCommand.ExecuteAsync(null);

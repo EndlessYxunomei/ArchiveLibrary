@@ -110,12 +110,13 @@ public class OriginalDetailViewModel: BaseDetailViewModel
     }
     private async Task AddPerson()
     {
-        await Task.Delay(10);//ЗАглушка
+        await navigationService.GoToPersonDetails();
     }
 
     //Кнопки Сохранить и отмена
     private protected override  async Task SaveChanges()
     {
+        if (HasErrors) { return; }
         var isValidOriginalNumber = await originalService.CheckInventoryNumber(InventoryNumber);
 
         if((id == 0 && isValidOriginalNumber.IsSuccess)

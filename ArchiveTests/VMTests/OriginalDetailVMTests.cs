@@ -196,7 +196,6 @@ public class OriginalDetailVMTests
         //Assert
         await navigationService.Received().GoToCompanyDetails(0);
     }
-    //ещё не реализовано в модели
     [Fact]
     public async Task AddPersonTest()
     {
@@ -237,7 +236,7 @@ public class OriginalDetailVMTests
         await test_vm.AddPersonCommand.ExecuteAsync(null);
 
         //Assert
-        //await navigationService.Received().GoToDocumentDetails(0);
+        await navigationService.Received().GoToPersonDetails(0);
 
     }
     
