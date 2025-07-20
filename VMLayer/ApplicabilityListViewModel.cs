@@ -9,7 +9,7 @@ using VMLayer.Navigation;
 
 namespace VMLayer;
 
-public class ApplicabilityListViewModel : ObservableValidator
+public class ApplicabilityListViewModel : ObservableObject
 {
     //сервисы
     private readonly IDialogService dialogService;
