@@ -13,6 +13,10 @@ public class EmptyOrWithinRangeAttribute : ValidationAttribute
         {
             return ValidationResult.Success!;
         }
+        else if (value == null)
+        {
+            return ValidationResult.Success!;
+        }
         else
         {
             return new ValidationResult($"Длина записи должна быть от {MinLength} до {MaxLength} символов или быть пустой.");

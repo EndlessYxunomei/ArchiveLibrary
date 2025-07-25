@@ -17,6 +17,13 @@
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Документы" ContentTemplate="{DataTemplate local:DocumentListPage}"/>
     </FlyoutItem>
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Пользователи" ContentTemplate="{DataTemplate local:PersonListPage}"/>
+    </FlyoutItem>
+    <FlyoutItem FlyoutDisplayOptions="AsSingleItem" Title="Прочее">
+        <ShellContent Title="Компании" ContentTemplate="{DataTemplate local:CompanyListPage}"/>
+        <ShellContent Title="Применимость" ContentTemplate="{DataTemplate local:ApplicabilityListPage}"/>
+    </FlyoutItem>
     <!--<ShellContent
         Title="Инвентарная книга"
         ContentTemplate="{DataTemplate local:OriginalListPage}"

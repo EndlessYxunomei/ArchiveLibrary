@@ -20,7 +20,7 @@ public class DocumentDetailViewModel: BaseDetailViewModel
     private int id;
     private string _name = string.Empty;
     private string? _description;
-    private DateTime _date;
+    private DateTime _date = DateTime.Today;
     private CompanyDto? _company;
     private DocumentType _documentType;
     private string oldName = string.Empty;

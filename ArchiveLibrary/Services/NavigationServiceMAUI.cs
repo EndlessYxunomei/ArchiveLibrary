@@ -31,7 +31,7 @@ namespace ArchiveLibrary.Services
         public Task GoToDocumentList() => Navigate(NavigationConstants.DocumentList);
 
         public Task GoToCompanyList() => Navigate(NavigationConstants.CompanyList);
-        public Task GoToCompanyDetails(int id = 0) => Navigate(NavigationConstants.DocumentDetail, new() { { NavParamConstants.CompanyDetail, id } });
+        public Task GoToCompanyDetails(int id = 0) => Navigate(NavigationConstants.CompanyDetail, new() { { NavParamConstants.CompanyDetail, id } });
 
         public Task GoToApplicabilityList() => Navigate(NavigationConstants.ApplicabilityList);
 

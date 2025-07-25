@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dto="clr-namespace:ArchiveModels.DTO;assembly=ArchiveModels"
+             xmlns:vms="clr-namespace:VMLayer;assembly=VMLayer"
+             x:Class="ArchiveLibrary.ApplicabilityListPage"
+             x:DataType="vms:ApplicabilityListViewModel"
+             Title="Применимость">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <HorizontalStackLayout Padding="5" Spacing="5" Grid.Row="0">
+                <Button Text="&#xe145;" FontFamily="MaterialIconsRegular" FontSize="20" Command="{Binding CreateCommand}"/>
+                <Button Text="&#xf88d;" FontFamily="MaterialIconsRegular" FontSize="20" Command="{Binding EditCommand}"/>
+                <Button Text="&#xe872;" FontFamily="MaterialIconsRegular" FontSize="20" Command="{Binding DeleteCommand}"/>
+            </HorizontalStackLayout>
+            <CollectionView ItemsSource="{Binding ApplicabilityList}" SelectedItem="{Binding SelectedApplicability}" SelectionMode="Single" EmptyView="Применимость отсуствует" Grid.Row="1">
+                <CollectionView.Header>
+                    <Grid RowSpacing="30" ColumnSpacing="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Text="Двигатель" Grid.Column="0" Grid.Row="0"/>
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:DataType="dto:ApplicabilityDto" RowSpacing="30" ColumnSpacing="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Description}" Grid.Column="0" Grid.Row="0"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>
