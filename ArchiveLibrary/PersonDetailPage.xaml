@@ -5,6 +5,9 @@
              x:Class="ArchiveLibrary.PersonDetailPage"
              x:DataType="vms:PersonDetailViewModel"
              Title="Данные о пользователе">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding CancelCommand}"/>
+    </Shell.BackButtonBehavior>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>

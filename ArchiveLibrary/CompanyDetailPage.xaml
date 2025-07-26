@@ -4,7 +4,10 @@
              xmlns:vms="clr-namespace:VMLayer;assembly=VMLayer"
              x:Class="ArchiveLibrary.CompanyDetailPage"
              x:DataType="vms:CompanyDetailViewModel"
-             Title="CompanyDetailPage">
+             Title="Информация о компании">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding CancelCommand}"/>
+    </Shell.BackButtonBehavior>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>

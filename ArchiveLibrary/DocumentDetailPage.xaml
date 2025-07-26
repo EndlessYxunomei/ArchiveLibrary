@@ -13,6 +13,9 @@
         <conv:EnumToIntConverter x:Key="enumToIntConverter"/>
         <!--<toolkit:EnumToIntConverter x:Key="enumDocumentConverter"/>-->
     </ContentPage.Resources>
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding CancelCommand}"/>
+    </Shell.BackButtonBehavior>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
