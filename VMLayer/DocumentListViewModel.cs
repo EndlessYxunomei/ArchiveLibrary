@@ -8,7 +8,7 @@ using VMLayer.Navigation;
 
 namespace VMLayer;
 
-public class DocumentListViewModel : ObservableObject, INavigationParameterReceiver
+public class DocumentListViewModel : ObservableObject, INavigationParameterReceiver, INavigatedTo
 {
     //Сервисы
     private readonly IDocumentService documentService;
@@ -83,17 +83,17 @@ public class DocumentListViewModel : ObservableObject, INavigationParameterRecei
         DeleteCommand = new AsyncRelayCommand(DeleteDocument, CanEditDeleteDocument);
         EditCommand = new AsyncRelayCommand(EditDocument, CanEditDeleteDocument);
 
-        LoadDocumentList();
+        //LoadDocumentList();
     }
 
-    private async Task LoadDocumentList()
-    {
-        var document_list = await documentService.GetDocumentListAsync();
-        if (document_list.IsSuccess)
-        {
-            document_list.Data.ForEach(DocumentList.Add);
-        }
-    }
+    //private async Task LoadDocumentList()
+    //{
+    //    var document_list = await documentService.GetDocumentListAsync();
+    //    if (document_list.IsSuccess)
+    //    {
+    //        document_list.Data.ForEach(DocumentList.Add);
+    //    }
+    //}
 
     //обработка навигации
     public Task OnNavigatedTo(Dictionary<string, object> parameters)
@@ -103,5 +103,18 @@ public class DocumentListViewModel : ObservableObject, INavigationParameterRecei
             UtilityService.UpdateList(DocumentList, documentListDto);
         }
         return Task.CompletedTask;
+    }
+
+    public async Task OnNavigatedTo(NavigationType type)
+    {
+        if (DocumentList.Count == 0)
+        {
+            var document_list = await documentService.GetDocumentListAsync();
+            if (document_list.IsSuccess)
+            {
+                document_list.Data.ForEach(DocumentList.Add);
+            }
+        }
+        //await LoadDocumentList();
     }
 }

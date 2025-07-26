@@ -8,7 +8,7 @@ using VMLayer.Navigation;
 
 namespace VMLayer;
 
-public class CompanyListViewModel : ObservableObject, INavigationParameterReceiver
+public class CompanyListViewModel : ObservableObject, INavigationParameterReceiver, INavigatedTo
 {
     //серивсы
     private readonly IDialogService dialogService;
@@ -83,18 +83,18 @@ public class CompanyListViewModel : ObservableObject, INavigationParameterReceiv
         DeleteCommand = new AsyncRelayCommand(DeleteCompany, CanEditDeleteCompany);
         EditCommand = new AsyncRelayCommand(EditCompany, CanEditDeleteCompany);
 
-        LoadCompanyList();
+        //LoadCompanyList();
     }
 
     //загрузка данных
-    private async Task LoadCompanyList()
-    {
-        var company_list = await companyService.GetCompanyListAsync();
-        if (company_list.IsSuccess)
-        {
-            company_list.Data.ForEach(CompanyList.Add);
-        }
-    }
+    //private async Task LoadCompanyList()
+    //{
+    //    var company_list = await companyService.GetCompanyListAsync();
+    //    if (company_list.IsSuccess)
+    //    {
+    //        company_list.Data.ForEach(CompanyList.Add);
+    //    }
+    //}
 
     //навигация
     public Task OnNavigatedTo(Dictionary<string, object> parameters)
@@ -104,5 +104,17 @@ public class CompanyListViewModel : ObservableObject, INavigationParameterReceiv
             UtilityService.UpdateList(CompanyList, companyListDto);
         }
         return Task.CompletedTask;
+    }
+
+    public async Task OnNavigatedTo(NavigationType navigationType)
+    {
+        if (CompanyList.Count == 0)
+        {
+            var company_list = await companyService.GetCompanyListAsync();
+            if (company_list.IsSuccess)
+            {
+                company_list.Data.ForEach(CompanyList.Add);
+            }
+        }
     }
 }

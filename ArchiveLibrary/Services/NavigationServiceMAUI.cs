@@ -2,7 +2,7 @@
 
 namespace ArchiveLibrary.Services
 {
-    public class NavigationServiceMAUI: INavigationService
+    public class NavigationServiceMAUI: INavigationService, INavigationInterceptor
     {
         private static async Task Navigate(string pageName, Dictionary<string, object> parameters)
         {
@@ -37,5 +37,24 @@ namespace ArchiveLibrary.Services
 
         public Task GoToPersonList() => Navigate(NavigationConstants.PersonList);
         public Task GoToPersonDetails(int id = 0) => Navigate(NavigationConstants.PersonDetail, new() { { NavParamConstants.PersonDetail, id } });
+
+        WeakReference<INavigatedFrom>? previousFrom;
+        public async Task OnNavigatedTo(object bindingContext, NavigationType navigationType)
+        {
+            if (previousFrom is not null && previousFrom.TryGetTarget(out var from))
+            {
+                await from.OnNavigatedFrom(navigationType);
+            }
+
+            if (bindingContext is INavigatedTo to)
+            {
+                await to.OnNavigatedTo(navigationType);
+            }
+
+            if (bindingContext is INavigatedFrom navigatedFrom)
+                previousFrom = new(navigatedFrom);
+            else
+                previousFrom = null;
+        }
     }
 }

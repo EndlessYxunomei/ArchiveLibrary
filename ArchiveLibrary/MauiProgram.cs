@@ -34,7 +34,18 @@ namespace ArchiveLibrary
 
             //сервисы
             builder.Services.AddSingleton<IDialogService, DialogServiceMAUI>();
-            builder.Services.AddSingleton<INavigationService, NavigationServiceMAUI>();
+            //builder.Services.AddSingleton<INavigationService, NavigationServiceMAUI>();
+
+            builder.Services.AddSingleton<NavigationServiceMAUI>();
+
+            builder.Services.AddSingleton<INavigationService>(
+                c => c.GetRequiredService<NavigationServiceMAUI>());
+
+            builder.Services.AddSingleton<INavigationInterceptor>(
+                c => c.GetRequiredService<NavigationServiceMAUI>());
+
+
+
             builder.Services.AddTransient<IOriginalService, OriginalService>();
             builder.Services.AddTransient<IPersonService, PersonService>();
             builder.Services.AddTransient<IDocumentService, DocumentService>();

@@ -9,7 +9,7 @@ using VMLayer.Navigation;
 
 namespace VMLayer;
 
-public class ApplicabilityListViewModel : ObservableObject
+public class ApplicabilityListViewModel : ObservableObject, INavigatedTo
 {
     //сервисы
     private readonly IDialogService dialogService;
@@ -114,16 +114,30 @@ public class ApplicabilityListViewModel : ObservableObject
         DeleteCommand = new AsyncRelayCommand(DeleteApplicability, CanEditDeleteApplicability);
         EditCommand = new AsyncRelayCommand(EditApplicability, CanEditDeleteApplicability);
 
-        LoadApplicabilities().Wait();
+        //LoadApplicabilities().Wait();
     }
 
     //загрузка данных
-    private async Task LoadApplicabilities()
+    //private async Task LoadApplicabilities()
+    //{
+    //    var list = await applicabilityService.GetApplicabilityListAsync();
+    //    if (list.IsSuccess)
+    //    {
+    //        list.Data.ForEach(ApplicabilityList.Add);
+    //    }
+    //}
+
+    public async Task OnNavigatedTo(NavigationType type)
     {
-        var list = await applicabilityService.GetApplicabilityListAsync();
-        if (list.IsSuccess)
+        if (ApplicabilityList.Count == 0)
         {
-            list.Data.ForEach(ApplicabilityList.Add);
+            var list = await applicabilityService.GetApplicabilityListAsync();
+            if (list.IsSuccess)
+            {
+                list.Data.ForEach(ApplicabilityList.Add);
+            }
         }
+        
+        //await LoadApplicabilities();
     }
 }

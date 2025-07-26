@@ -1,14 +1,13 @@
-﻿using VMLayer.Navigation;
+﻿using ArchiveLibrary.Services;
 
-namespace ArchiveLibrary
+namespace ArchiveLibrary;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public App(INavigationInterceptor interceptor)
     {
-        public App()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            MainPage = new AppShell();
-        }
+        MainPage = new AppShell(interceptor);
     }
 }

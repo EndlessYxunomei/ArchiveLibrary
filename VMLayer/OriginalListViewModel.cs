@@ -8,7 +8,7 @@ using VMLayer.Navigation;
 
 namespace VMLayer;
 
-public class OriginalListViewModel : ObservableObject, INavigationParameterReceiver
+public class OriginalListViewModel : ObservableObject, INavigationParameterReceiver, INavigatedTo
 {
     //Сервисы
     private readonly IOriginalService originalService;
@@ -84,17 +84,17 @@ public class OriginalListViewModel : ObservableObject, INavigationParameterRecei
         EditCommand = new AsyncRelayCommand(EditOriginal, CanEditDeleteOriginal);
 
         //Загружаем перовначальный список (УБРАТБ КОГДА СДЕЛАЕМ НОРМАЛЬНО)
-        LoadOriginalList();
+        //LoadOriginalList();
     }
 
-    private async Task LoadOriginalList()
-    {
-        var originallist = await originalService.GetOriginalListAsync();
-        if (originallist.IsSuccess)
-        {
-            originallist.Data.ForEach(OriginalsList.Add);
-        }
-    }
+    //private async Task LoadOriginalList()
+    //{
+    //    var originallist = await originalService.GetOriginalListAsync();
+    //    if (originallist.IsSuccess)
+    //    {
+    //        originallist.Data.ForEach(OriginalsList.Add);
+    //    }
+    //}
 
     //обработка навигации
     public Task OnNavigatedTo(Dictionary<string, object> parameters)
@@ -104,5 +104,17 @@ public class OriginalListViewModel : ObservableObject, INavigationParameterRecei
             UtilityService.UpdateList(OriginalsList, originalListDto);
         }
         return Task.CompletedTask;
+    }
+
+    public async Task OnNavigatedTo(NavigationType navigationType)
+    {
+        if (OriginalsList.Count == 0)
+        {
+            var originallist = await originalService.GetOriginalListAsync();
+            if (originallist.IsSuccess)
+            {
+                originallist.Data.ForEach(OriginalsList.Add);
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ using VMLayer.Navigation;
 
 namespace VMLayer;
 
-public class PersonListViewModel : ObservableObject, INavigationParameterReceiver
+public class PersonListViewModel : ObservableObject, INavigationParameterReceiver, INavigatedTo
 {
     //сервисы
     private readonly IDialogService dialogService;
@@ -83,18 +83,18 @@ public class PersonListViewModel : ObservableObject, INavigationParameterReceive
         EditCommand = new AsyncRelayCommand(EditPerson, CanEditDeletePerson);
         DeleteCommand = new AsyncRelayCommand(DeletePerson, CanEditDeletePerson);
 
-        LoadPersonListAsync();
+        //LoadPersonListAsync();
     }
 
     //загрузка данных
-    private async Task LoadPersonListAsync()
-    {
-        var perList = await personService.GetPersonListAsync();
-        if (perList.IsSuccess)
-        {
-            perList.Data.ForEach(PersonList.Add);
-        }
-    }
+    //private async Task LoadPersonListAsync()
+    //{
+    //    var perList = await personService.GetPersonListAsync();
+    //    if (perList.IsSuccess)
+    //    {
+    //        perList.Data.ForEach(PersonList.Add);
+    //    }
+    //}
 
     //обработка навигации
     public Task OnNavigatedTo(Dictionary<string, object> parameters)
@@ -104,5 +104,17 @@ public class PersonListViewModel : ObservableObject, INavigationParameterReceive
             UtilityService.UpdateList(PersonList, personListDto);
         }
         return Task.CompletedTask;
+    }
+
+    public async Task OnNavigatedTo(NavigationType navigationType)
+    {
+        if (PersonList.Count == 0)
+        {
+            var perList = await personService.GetPersonListAsync();
+            if (perList.IsSuccess)
+            {
+                perList.Data.ForEach(PersonList.Add);
+            }
+        }
     }
 }
