@@ -17,7 +17,7 @@ public class Copy : FullAuditableModel
     public int? DeletionDocumentId { get; set; }
     [ForeignKey("DeletionDocumentId")]
     public virtual Document? DeletionDocument { get; set; }
-    //Датат удничтожения копии
+    //Дата уничтожения копии
     public DateOnly? DelitionDate { get; set; }
     public List<Delivery> Deliveries { get; set; } = [];
 }

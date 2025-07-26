@@ -114,7 +114,7 @@ public class ApplicabilityListViewModel : ObservableObject
         DeleteCommand = new AsyncRelayCommand(DeleteApplicability, CanEditDeleteApplicability);
         EditCommand = new AsyncRelayCommand(EditApplicability, CanEditDeleteApplicability);
 
-        LoadApplicabilities();
+        LoadApplicabilities().Wait();
     }
 
     //загрузка данных

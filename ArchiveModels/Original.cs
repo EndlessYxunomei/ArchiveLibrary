@@ -39,17 +39,23 @@ public class Original : FullAuditableModel
 
     public override bool Equals(object? obj)
     {
-        if (obj == null || GetType() != obj.GetType())
-        {
+        // Reference equality check
+        if (ReferenceEquals(this, obj))
+            return true;
+
+        // Null and type check
+        if (obj is not Original other)
             return false;
-        }
-        Original original = (Original)obj;
-        return original.Id == Id;
+
+        // Value comparison
+        return Id == other.Id;
     }
+
     public override int GetHashCode()
     {
-        return Id;
+        return Id.GetHashCode();
     }
+
     public static explicit operator Original(OriginalDetailDto dto)
     {
         return new Original()
