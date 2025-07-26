@@ -25,6 +25,7 @@ public class OriginalListVMTests
         ];
         originalService.GetOriginalListAsync().Returns( Result<List<OriginalListDto>>.Success(test_list));
         var test_vm = new OriginalListViewModel(navigationService, dialogService, originalService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
         await test_vm.CreateCommand.ExecuteAsync(null);
@@ -48,6 +49,7 @@ public class OriginalListVMTests
         ];
         originalService.GetOriginalListAsync().Returns(Result<List<OriginalListDto>>.Success(test_list));
         var test_vm = new OriginalListViewModel(navigationService, dialogService, originalService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedOriginal = test_vm.OriginalsList[1];
 
         //Act
@@ -73,6 +75,7 @@ public class OriginalListVMTests
         originalService.DeleteOriginal(Arg.Any<int>()).Returns(Result<Nothing>.Success());
         dialogService.AskYesNo(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
         var test_vm = new OriginalListViewModel(navigationService, dialogService, originalService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedOriginal = test_vm.OriginalsList[1];
 
         //Act
@@ -98,9 +101,11 @@ public class OriginalListVMTests
         OriginalListDto test_dto = new() { Id = 4, OriginalInventoryNumber = 7, OriginalName = "test4", OriginalCaption = "caption4" };
         originalService.GetOriginalListAsync().Returns(Result<List<OriginalListDto>>.Success(test_list));
         var test_vm = new OriginalListViewModel(navigationService, dialogService, originalService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
-        await test_vm.OnNavigatedTo(new() { { NavParamConstants.OriginalList, test_dto } });
+        Dictionary<string, object> nav_dic = new() { { NavParamConstants.OriginalList, test_dto } };
+        await test_vm.OnNavigatedTo(nav_dic);
 
         //Assert
         Assert.Equal(4, test_vm.OriginalsList.Count);

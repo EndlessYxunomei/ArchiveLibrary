@@ -25,6 +25,7 @@ public class PersonListVMTests
         personService.GetPersonListAsync().Returns(Result<List<PersonListDto>>.Success(test_list));
 
         var test_vm = new PersonListViewModel(personService, dialogService, navigationService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
         await test_vm.CreateCommand.ExecuteAsync(null);
@@ -48,6 +49,7 @@ public class PersonListVMTests
         personService.GetPersonListAsync().Returns(Result<List<PersonListDto>>.Success(test_list));
 
         var test_vm = new PersonListViewModel(personService, dialogService, navigationService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedPerson = test_vm.PersonList[1];
 
         //Act
@@ -73,6 +75,7 @@ public class PersonListVMTests
         personService.DeletePerson(default).ReturnsForAnyArgs(Result<Nothing>.Success());
 
         var test_vm = new PersonListViewModel(personService, dialogService, navigationService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedPerson = test_vm.PersonList[1];
 
         //Act
@@ -98,9 +101,11 @@ public class PersonListVMTests
         PersonListDto test_dto = new() { Id = 6, FullName = "test" };
 
         var test_vm = new PersonListViewModel(personService, dialogService, navigationService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
-        await test_vm.OnNavigatedTo(new() { { NavParamConstants.PersonList, test_dto } });
+        Dictionary<string, object> nav_dic = new() { { NavParamConstants.PersonList, test_dto } };
+        await test_vm.OnNavigatedTo(nav_dic);
 
         //Assert
         Assert.Equal(3, test_vm.PersonList.Count);

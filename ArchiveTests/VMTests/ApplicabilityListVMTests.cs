@@ -31,6 +31,7 @@ public class ApplicabilityListVMTests
         applicabilityService.UpsertApplicability(Arg.Any<ApplicabilityDto>()).ReturnsForAnyArgs(Result<ApplicabilityDto>.Success(test_dto));
 
         var test_vm = new ApplicabilityListViewModel(dialogService, applicabilityService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
         await test_vm.CreateCommand.ExecuteAsync(null);
@@ -59,6 +60,7 @@ public class ApplicabilityListVMTests
         applicabilityService.UpsertApplicability(Arg.Any<ApplicabilityDto>()).ReturnsForAnyArgs(Result<ApplicabilityDto>.Success(test_dto));
 
         var test_vm = new ApplicabilityListViewModel(dialogService, applicabilityService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedApplicability = test_vm.ApplicabilityList[1];
 
         //Act
@@ -85,6 +87,7 @@ public class ApplicabilityListVMTests
         applicabilityService.DeleteApplicability(default).ReturnsForAnyArgs(Result<Nothing>.Success());
 
         var test_vm = new ApplicabilityListViewModel(dialogService, applicabilityService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedApplicability = test_vm.ApplicabilityList[1];
 
         //Act

@@ -28,6 +28,7 @@ public class DocumentListVMTests
         docunentService.GetDocumentListAsync().Returns(Result<List<DocumentListDto>>.Success(test_list));
 
         var test_vm = new DocumentListViewModel(dialogService, navigationService, docunentService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
         await test_vm.CreateCommand.ExecuteAsync(null);
@@ -54,6 +55,7 @@ public class DocumentListVMTests
         docunentService.GetDocumentListAsync().Returns(Result<List<DocumentListDto>>.Success(test_list));
 
         var test_vm = new DocumentListViewModel(dialogService, navigationService, docunentService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedDocument = test_vm.DocumentList[2];
 
         //Act
@@ -82,6 +84,7 @@ public class DocumentListVMTests
         docunentService.DeleteDocument(default).ReturnsForAnyArgs(Result<Nothing>.Success());
 
         var test_vm = new DocumentListViewModel(dialogService, navigationService, docunentService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedDocument = test_vm.DocumentList[2];
 
         //Act
@@ -109,9 +112,11 @@ public class DocumentListVMTests
         DocumentListDto test_dto = new() { Id = 6, Name = "test6", DocumentType = ArchiveModels.DocumentType.AddCorrection };
 
         var test_vm = new DocumentListViewModel(dialogService, navigationService, docunentService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
-        await test_vm.OnNavigatedTo(new() { { NavParamConstants.DocumentList, test_dto } });
+        Dictionary<string, object> nav_dic = new() { { NavParamConstants.DocumentList, test_dto } };
+        await test_vm.OnNavigatedTo(nav_dic);
 
         //Assert
         Assert.Equal(6, test_vm.DocumentList.Count);

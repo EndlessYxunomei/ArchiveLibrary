@@ -25,6 +25,7 @@ public class CompanyListVMTests
         companyService.GetCompanyListAsync().Returns(Result<List<CompanyDto>>.Success(test_list));
 
         var test_vm = new CompanyListViewModel(navigationService, dialogService, companyService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
         await test_vm.CreateCommand.ExecuteAsync(null);
@@ -48,6 +49,7 @@ public class CompanyListVMTests
         companyService.GetCompanyListAsync().Returns(Result<List<CompanyDto>>.Success(test_list));
 
         var test_vm = new CompanyListViewModel(navigationService, dialogService, companyService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedCompany = test_vm.CompanyList[0];
 
         //Act
@@ -74,6 +76,7 @@ public class CompanyListVMTests
         dialogService.AskYesNo(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
 
         var test_vm = new CompanyListViewModel(navigationService, dialogService, companyService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
         test_vm.SelectedCompany = test_vm.CompanyList[0];
 
         //Act
@@ -99,9 +102,11 @@ public class CompanyListVMTests
         companyService.GetCompanyListAsync().Returns(Result<List<CompanyDto>>.Success(test_list));
 
         var test_vm = new CompanyListViewModel(navigationService, dialogService, companyService);
+        await test_vm.OnNavigatedTo(NavigationType.Unknown);
 
         //Act
-        await test_vm.OnNavigatedTo(new() { { NavParamConstants.CompanyList, test_dto } });
+        Dictionary<string, object> nav_dic = new() { { NavParamConstants.CompanyList, test_dto } };
+        await test_vm.OnNavigatedTo(nav_dic);
 
         //Assert
         Assert.Equal(3, test_vm.CompanyList.Count);
